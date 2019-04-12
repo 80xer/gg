@@ -40,12 +40,18 @@ class GG {
 
   drawGrid() {
     const { target } = this.props;
-    const positionInfo = target.getBoundingClientRect();
     const { head, body } = this;
     const container = this.createContainer();
     this.$container.appendChild(head.$area);
     this.$container.appendChild(body.$area);
+    this.setWidthOfColumns();
     target.appendChild(this.$container);
+  }
+
+  setWidthOfColumns() {
+    const { target, columns } = this.props;
+    const positionInfo = target.getBoundingClientRect();
+    const targetWidth = positionInfo.width;
   }
 }
 

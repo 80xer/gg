@@ -1,5 +1,5 @@
 import { props as validateProps } from '../../src/validate';
-import basicProps from '../basicProps';
+import sampleProps from '../sampleProps';
 
 let container;
 
@@ -21,6 +21,6 @@ describe('validate props', () => {
     expect(validateProps({ target: container })).toBe(false);
     expect(validateProps({ target: container, data: {} })).toBe(false);
     expect(validateProps({ target: container, data: [{}] })).toBe(false);
-    expect(validateProps({ target: container, ...basicProps })).toBe(true);
+    expect(validateProps({ target: container, ...sampleProps })).toBe(true);
   });
 });

@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import Body from '../../src/body';
-import basicProps from '../basicProps';
+import sampleProps from '../sampleProps';
 
 describe('Body', () => {
   it('create', () => {
     document.body.innerHTML = '<div id="grid"></div>';
     const container = document.querySelector('#grid');
-    const body = new Body({ target: container, ...basicProps });
+    const body = new Body({ target: container, ...sampleProps });
     expect(typeof body.$area).toEqual('object');
   });
 });

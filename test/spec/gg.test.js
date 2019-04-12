@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import GG from '../../src/gg';
-import Body from '../../src/body';
-import basicProps from '../basicProps';
+import sampleProps from '../sampleProps';
 
 let container;
 
@@ -10,7 +9,7 @@ beforeEach(() => {
   container = document.querySelector('#grid');
 });
 
-describe('GG init', () => {
+describe('GG init and create', () => {
   it('set target after create GG with empty arguments', () => {
     const gg1 = new GG();
     expect(gg1.props).toBe(undefined);
@@ -23,11 +22,23 @@ describe('GG init', () => {
     const gg = new GG({ target: container });
     expect(gg.props.target).toEqual(container);
   });
+
+  it('create body table when create instance with arguments', () => {
+    const props = { target: container, ...sampleProps };
+    const gg = new GG(props);
+  });
 });
 
 describe('GG create', () => {
-  it('create body table when create instance with arguments', () => {
-    const props = { target: container, ...basicProps };
-    const gg = new GG(props);
+  let props;
+  let gg;
+
+  beforeEach(() => {
+    props = { target: container, ...sampleProps };
+    gg = new GG(props);
+  });
+
+  it('should set width of columns', () => {
+    gg.setWidthOfColumns();
   });
 });
