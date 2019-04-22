@@ -1,5 +1,5 @@
 import { props as validateProps } from '../../src/validate';
-import sampleProps from '../sampleProps';
+import sampleProps from '../../src/sampleProps';
 
 let container;
 

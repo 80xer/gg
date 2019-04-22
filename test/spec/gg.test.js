@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import GG from '../../src/gg';
-import sampleProps from '../sampleProps';
+import sampleProps from '../../src/sampleProps';
 
 let container;
 

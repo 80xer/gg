@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Head from '../../src/head';
-import sampleProps from '../sampleProps';
+import sampleProps from '../../src/sampleProps';
 
 describe('Head', () => {
   it('create', () => {
