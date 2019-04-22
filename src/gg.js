@@ -4,6 +4,7 @@ import { props as validateProps } from './validate';
 import Head from './head';
 import Body from './body';
 import { addClass } from './utils';
+import './style/gg.scss';
 
 class GG {
   constructor(props) {
@@ -30,6 +31,7 @@ class GG {
     this.createHead();
     this.createBody();
     const { target } = this.props;
+    addClass(target, 'gg');
   }
 
   createContainer() {
@@ -40,19 +42,18 @@ class GG {
 
   drawGrid() {
     const { target } = this.props;
+    const positionInfo = target.getBoundingClientRect();
+    console.log('positionInfo', positionInfo);
     const { head, body } = this;
     const container = this.createContainer();
     this.$container.appendChild(head.$area);
     this.$container.appendChild(body.$area);
-    this.setWidthOfColumns();
     target.appendChild(this.$container);
-  }
-
-  setWidthOfColumns() {
-    const { target, columns } = this.props;
-    const positionInfo = target.getBoundingClientRect();
-    const targetWidth = positionInfo.width;
   }
 }
 
-export default GG;
+function gg(options) {
+  return new GG(options);
+}
+
+export default gg;

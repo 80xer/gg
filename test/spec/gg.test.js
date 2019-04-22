@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import GG from '../../src/gg';
+import gg from '../../src/gg';
 import sampleProps from '../../src/sampleProps';
 
 let container;
@@ -9,9 +9,9 @@ beforeEach(() => {
   container = document.querySelector('#grid');
 });
 
-describe('GG init and create', () => {
-  it('set target after create GG with empty arguments', () => {
-    const gg1 = new GG();
+describe('gg init and create', () => {
+  it('set target after create gg with empty arguments', () => {
+    const gg1 = gg();
     expect(gg1.props).toBe(undefined);
     const props = { target: container };
     gg1.init(props);
@@ -19,26 +19,22 @@ describe('GG init and create', () => {
   });
 
   it('set target from arguments', () => {
-    const gg = new GG({ target: container });
-    expect(gg.props.target).toEqual(container);
+    const gg2 = gg({ target: container });
+    expect(gg2.props.target).toEqual(container);
   });
 
   it('create body table when create instance with arguments', () => {
     const props = { target: container, ...sampleProps };
-    const gg = new GG(props);
+    const gg3 = gg(props);
   });
 });
 
-describe('GG create', () => {
+describe('gg create', () => {
   let props;
-  let gg;
+  let gg4;
 
   beforeEach(() => {
     props = { target: container, ...sampleProps };
-    gg = new GG(props);
-  });
-
-  it('should set width of columns', () => {
-    gg.setWidthOfColumns();
+    gg4 = gg(props);
   });
 });

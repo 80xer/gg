@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import { addClass } from './utils';
+import ColGroup from './colgroup';
 
 class Body {
-  constructor({ columns, data }) {
-    this.columns = columns;
-    this.data = data;
+  constructor(props) {
+    this.props = props;
     this.createBodyArea();
   }
 
@@ -22,35 +22,35 @@ class Body {
     const table = document.createElement('table');
     const colgroup = this.createColGroup();
     const tbody = this.createTbody();
-    table.appendChild(colgroup);
+    table.appendChild(colgroup.$el);
     table.appendChild(tbody);
     return table;
   }
 
   createColGroup() {
-    const colgroup = document.createElement('colgroup');
-    const { columns } = this;
-    columns.forEach((column) => {
-      const col = document.createElement('col');
-      col.setAttribute('data-column-name', column.name);
-      col.textContent = column.title;
-      colgroup.appendChild(col);
-    });
+    const colgroup = new ColGroup(this.props);
+    this.colgroup = colgroup;
     return colgroup;
   }
 
   createTbody() {
     const tbody = document.createElement('tbody');
-    const { columns, data } = this;
+    const { target, columns, data } = this.props;
     data.forEach((row, i) => {
       const num = i + 1;
       const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
       const tr = document.createElement('tr');
+      const fontSize = getComputedStyle(target)['font-size'];
+      const height = parseInt(fontSize, 10) + 16;
+      tr.setAttribute('height', `${height}px`);
       addClass(tr, className);
       columns.forEach((column) => {
         const td = document.createElement('td');
         td.setAttribute('data-column-name', column.name);
-        td.textContent = row[column.name];
+        const div = document.createElement('div');
+        div.textContent = row[column.name];
+        div.style.padding = '0 10px';
+        td.appendChild(div);
         tr.appendChild(td);
       });
       tbody.appendChild(tr);

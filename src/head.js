@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import { addClass } from './utils';
+import ColGroup from './colgroup';
 
 class Head {
-  constructor({ columns }) {
-    this.columns = columns;
+  constructor(props) {
+    this.props = props;
     this.createHeadArea();
   }
 
@@ -21,32 +22,28 @@ class Head {
     const table = document.createElement('table');
     const colgroup = this.createColGroup();
     const tbody = this.createTbody();
-    table.appendChild(colgroup);
+    table.appendChild(colgroup.$el);
     table.appendChild(tbody);
     this.table = table;
     return table;
   }
 
   createColGroup() {
-    const colgroup = document.createElement('colgroup');
-    const { columns } = this;
-    columns.forEach((column) => {
-      const col = document.createElement('col');
-      col.setAttribute('data-column-name', column.name);
-      col.textContent = column.title;
-      colgroup.appendChild(col);
-    });
+    const colgroup = new ColGroup(this.props);
     this.colgroup = colgroup;
     return colgroup;
   }
 
   createTbody() {
     const tbody = document.createElement('tbody');
-    const { columns } = this;
+    const { columns } = this.props;
     const tr = document.createElement('tr');
+    const fontSize = getComputedStyle(this.props.target)['font-size'];
+    const height = parseInt(fontSize, 10) + 20;
     columns.forEach((column) => {
       const th = document.createElement('th');
       th.setAttribute('data-column-name', column.name);
+      th.setAttribute('height', `${height}px`);
       th.textContent = column.title;
       tr.appendChild(th);
     });
