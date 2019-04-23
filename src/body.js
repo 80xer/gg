@@ -56,6 +56,7 @@ class Body {
       columns.forEach((column) => {
         const td = document.createElement('td');
         td.setAttribute('data-column-name', column.name);
+        td.style.lineHeight = fontSize;
         const div = document.createElement('div');
         div.textContent = row[column.name];
         div.style.padding = '0 10px';

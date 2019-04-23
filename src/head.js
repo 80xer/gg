@@ -44,6 +44,7 @@ class Head {
       const th = document.createElement('th');
       th.setAttribute('data-column-name', column.name);
       th.setAttribute('height', `${height}px`);
+      th.style.lineHeight = fontSize;
       th.textContent = column.title;
       tr.appendChild(th);
     });

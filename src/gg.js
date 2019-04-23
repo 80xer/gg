@@ -36,11 +36,11 @@ class GG {
   }
 
   createGrid() {
+    const { target } = this.props;
+    addClass(target, 'gg');
     this.createHead();
     this.createBody();
     this.createBorderLine();
-    const { target } = this.props;
-    addClass(target, 'gg');
   }
 
   createContainer() {
