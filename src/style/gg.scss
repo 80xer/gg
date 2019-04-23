@@ -1,5 +1,100 @@
 .gg {
-  color: red;
+  color: #444;
   font-size: 12px;
   font-family: '\B3CB\C6C0', Dotum, Helvetica, 'Apple SD Gothic Neo', Sans-serif;
+
+  .gg-contents {
+    position: relative;
+    .gg-border-line {
+      position: absolute;
+      background-color: #aaa;
+      &-top {
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+      }
+      &-right {
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 1px;
+      }
+      &-bottom {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+      }
+      &-left {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 1px;
+      }
+    }
+  }
+
+  table {
+    width: 1px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  .gg-head-area {
+    border-bottom: 1px solid #aaa;
+    table {
+      tbody {
+        tr {
+          th {
+            border-style: solid;
+            border-color: #ccc;
+            border-left-width: 1px;
+            border-right-width: 1px;
+            &:first-child {
+              border-left-width: 0px;
+            }
+            overflow: hidden;
+            white-space: nowrap;
+            background-color: #eee;
+          }
+        }
+      }
+    }
+  }
+
+  .gg-body-area {
+    overflow: hidden;
+    .gg-body-table-container {
+      margin-top: -1px;
+    }
+    table {
+      tbody {
+        tr {
+          td {
+            padding-top: 3px;
+            border-style: solid;
+            border-color: #ccc;
+            border-left-width: 1px;
+            border-right-width: 1px;
+            border-top-width: 1px;
+            border-bottom-width: 1px;
+            &:first-child {
+              border-left-width: 0px;
+            }
+            overflow: hidden;
+            white-space: nowrap;
+            div {
+              white-space: nowrap;
+              padding: 3px 10px;
+              overflow: hidden;
+              box-sizing: border-box;
+              word-break: break-all;
+            }
+          }
+        }
+      }
+    }
+  }
 }

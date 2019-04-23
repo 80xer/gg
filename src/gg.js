@@ -3,6 +3,7 @@
 import { props as validateProps } from './validate';
 import Head from './head';
 import Body from './body';
+import BorderLine from './border-line';
 import { addClass } from './utils';
 import './style/gg.scss';
 
@@ -27,27 +28,38 @@ class GG {
     this.head = new Head(this.props);
   }
 
+  createBorderLine() {
+    this.topLine = new BorderLine({ type: 'top' });
+    this.rightLine = new BorderLine({ type: 'right' });
+    this.bottomLine = new BorderLine({ type: 'bottom' });
+    this.leftLine = new BorderLine({ type: 'left' });
+  }
+
   createGrid() {
     this.createHead();
     this.createBody();
+    this.createBorderLine();
     const { target } = this.props;
     addClass(target, 'gg');
   }
 
   createContainer() {
     const container = document.createElement('div');
-    addClass(container, 'gg-container');
+    addClass(container, 'gg-contents');
     this.$container = container;
   }
 
   drawGrid() {
     const { target } = this.props;
     const positionInfo = target.getBoundingClientRect();
-    console.log('positionInfo', positionInfo);
-    const { head, body } = this;
+    const { head, body, topLine, rightLine, bottomLine, leftLine } = this;
     const container = this.createContainer();
     this.$container.appendChild(head.$area);
     this.$container.appendChild(body.$area);
+    this.$container.appendChild(topLine.$line);
+    this.$container.appendChild(rightLine.$line);
+    this.$container.appendChild(bottomLine.$line);
+    this.$container.appendChild(leftLine.$line);
     target.appendChild(this.$container);
   }
 }

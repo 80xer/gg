@@ -12,10 +12,19 @@ class Body {
   createBodyArea() {
     const area = document.createElement('div');
     addClass(area, 'gg-body-area');
-    const table = this.createTable();
-    area.appendChild(table);
+    const container = this.createTableContainer();
+    area.appendChild(container);
     this.$area = area;
     return area;
+  }
+
+  createTableContainer() {
+    const container = document.createElement('div');
+    addClass(container, 'gg-body-table-container');
+    const table = this.createTable();
+    container.appendChild(table);
+    this.$container = container;
+    return container;
   }
 
   createTable() {

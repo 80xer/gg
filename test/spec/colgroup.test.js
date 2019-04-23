@@ -8,6 +8,6 @@ describe('ColGroup', () => {
     const result = ColGroup.calculateWidthOfColumns(totalWidth, count);
     expect(result.length).toEqual(count);
     expect(result[0]).toEqual(33);
-    expect(result[count - 1]).toEqual(34);
+    expect(result[count - 1]).toEqual(34 - 1);
   });
 });

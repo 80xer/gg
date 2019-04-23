@@ -43,6 +43,8 @@ class ColGroup {
         result.push(width);
       }
     }
+    // 테이블의 우측 보더라인과 정확히 겹치기 위해 마지막 컬럼의 너비를 1px 줄인다.
+    result[result.length - 1] -= 1;
     return result;
   }
 }
