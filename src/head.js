@@ -50,6 +50,8 @@ class Head {
     });
     tbody.appendChild(tr);
     this.tbody = tbody;
+    // height + padding + border
+    this.height = height + 2 + 1;
     return tbody;
   }
 }

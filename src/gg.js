@@ -22,6 +22,8 @@ class GG {
 
   createBody() {
     this.body = new Body(this.props);
+    const bodyHeight = this.props.target.offsetHeight - this.head.height;
+    this.body.$area.style.height = `${bodyHeight}px`;
   }
 
   createHead() {
