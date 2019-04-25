@@ -9,6 +9,14 @@ describe('ColGroup', () => {
     }).toThrow();
   });
 
+  it('not throw error when call setWidthOfColumns with target', () => {
+    document.body.innerHTML = '<div id="grid"></div>';
+    const container = document.querySelector('#grid');
+    expect(() => {
+      const colgroup = new ColGroup({ target: container, ...sampleProps, hasScroll: true });
+    }).not.toThrow();
+  });
+
   it('calculate width', () => {
     const totalWidth = 100;
     const columns = [

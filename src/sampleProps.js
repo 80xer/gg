@@ -1,40 +1,42 @@
 const columns = [
   {
     title: 'ID',
-    name: 'id',
+    field: 'id',
     width: 40
   },
   {
     title: '도시',
-    name: 'city',
+    field: 'city',
     width: 80,
     filter: true
   },
   {
     title: '이름',
-    name: 'name',
+    field: 'name',
     width: 80,
     filter: true
   },
   {
     title: '성별',
-    name: 'gender',
+    field: 'gender',
     width: 60,
     filter: true,
     align: 'center'
   },
   {
     title: '취미',
-    name: 'hobby'
+    field: 'hobby',
+    value: (v) => v.toUpperCase(),
+    cellTemplate: (v) => `<p style="color:blue;">${v}</p>`
   },
   {
     title: '별명',
-    name: 'nickName',
+    field: 'nickName',
     align: 'center'
   },
   {
     title: '전화번호',
-    name: 'phone',
+    field: 'phone',
     align: 'right'
   }
 ];
@@ -228,7 +230,7 @@ const createData = () => {
 const data = createData();
 
 const props = {
-  height: 500,
+  height: 800,
   columns,
   data
 };

@@ -44,6 +44,24 @@ class Body {
     return colgroup;
   }
 
+  getValue(data, fields, template) {
+    const value = fields.split('.').reduce((obj, prop) => obj && obj[prop], data);
+    if (template) {
+      return template(value);
+    }
+    return value;
+  }
+
+  getCell(value, template) {
+    const div = document.createElement('div');
+    if (template) {
+      div.innerHTML = template(value);
+      return div.firstChild;
+    }
+    div.innerHTML = value;
+    return div;
+  }
+
   createTbody() {
     const tbody = document.createElement('tbody');
     const { target, columns, data } = this.props;
@@ -58,15 +76,14 @@ class Body {
       addClass(tr, className);
       columns.forEach((column) => {
         const td = document.createElement('td');
-        td.setAttribute('data-column-name', column.name);
+        td.setAttribute('data-column-name', column.field);
         if (column.align) {
           td.style.textAlign = column.align;
         }
         td.style.lineHeight = fontSize;
-        const div = document.createElement('div');
-        div.textContent = row[column.name];
-        div.style.padding = '0 10px';
-        td.appendChild(div);
+        const value = this.getValue(row, column.field, column.value);
+        const cell = this.getCell(value, column.cellTemplate);
+        td.appendChild(cell);
         tr.appendChild(td);
       });
       tbody.appendChild(tr);

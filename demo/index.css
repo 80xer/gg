@@ -10,5 +10,12 @@ body {
 
 #grid {
   margin: auto;
-  width: 700px;
+  width: 100%;
+  font-size: 14px;
+}
+
+.gotoProfileBtn {
+  border: 1px solid #aaa;
+  padding: 2px 4px;
+  color: #999;
 }

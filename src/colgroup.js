@@ -23,7 +23,6 @@ class ColGroup {
 
   scrollBarWidth() {
     const { hasScroll } = this.props;
-    console.log('hasScroll :', hasScroll);
     if (hasScroll) return 14;
     return 0;
   }
