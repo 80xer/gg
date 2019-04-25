@@ -6,7 +6,7 @@ describe('Head', () => {
   it('create', () => {
     document.body.innerHTML = '<div id="grid"></div>';
     const container = document.querySelector('#grid');
-    const head = new Head({ target: container, columns: sampleProps.columns });
+    const head = new Head({ target: container, ...sampleProps });
     expect(typeof head.$area).toEqual('object');
   });
 });

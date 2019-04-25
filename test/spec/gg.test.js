@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import gg from '../../src/gg';
+import defaultProps from '../../src/defaultProps';
 import sampleProps from '../../src/sampleProps';
 
 let container;
@@ -12,8 +13,8 @@ beforeEach(() => {
 describe('gg init and create', () => {
   it('set target after create gg with empty arguments', () => {
     const gg1 = gg();
-    expect(gg1.props).toBe(undefined);
-    const props = { target: container };
+    expect(gg1.props).toEqual(defaultProps);
+    const props = { ...defaultProps, target: container };
     gg1.init(props);
     expect(gg1.props).toEqual(props);
   });

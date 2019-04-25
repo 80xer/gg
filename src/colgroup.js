@@ -21,12 +21,20 @@ class ColGroup {
     return colgroup;
   }
 
+  scrollBarWidth() {
+    const { hasScroll } = this.props;
+    console.log('hasScroll :', hasScroll);
+    if (hasScroll) return 14;
+    return 0;
+  }
+
   setWidthOfColumns() {
-    const { target, columns } = this.props;
+    const { target, columns, data } = this.props;
     if (!target) throw new Error('required target, in colgroup');
     const positionInfo = target.getBoundingClientRect();
     const targetWidth = positionInfo.width;
-    const widthColumns = ColGroup.calculateWidthOfColumns(targetWidth - 14, columns);
+    const scrollBarWidth = this.scrollBarWidth();
+    const widthColumns = ColGroup.calculateWidthOfColumns(targetWidth - scrollBarWidth, columns);
     const cols = this.$el.querySelectorAll('col');
     cols.forEach((col, i) => {
       col.setAttribute('width', widthColumns[i]);

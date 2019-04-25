@@ -5,6 +5,7 @@ import Head from './head';
 import Body from './body';
 import BorderLine from './border-line';
 import { addClass } from './utils';
+import defaultProps from './defaultProps';
 import './style/gg.scss';
 
 class GG {
@@ -17,12 +18,13 @@ class GG {
   }
 
   init(props) {
-    this.props = props;
+    this.props = { ...defaultProps, ...props };
   }
 
   createBody() {
     this.body = new Body(this.props);
-    const bodyHeight = this.props.target.offsetHeight - this.head.height;
+    const targetHeight = this.props.height;
+    const bodyHeight = targetHeight - this.head.height;
     this.body.$area.style.height = `${bodyHeight}px`;
   }
 
@@ -40,6 +42,7 @@ class GG {
   createGrid() {
     const { target } = this.props;
     addClass(target, 'gg');
+
     this.createHead();
     this.createBody();
     this.createBorderLine();

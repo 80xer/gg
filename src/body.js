@@ -29,15 +29,17 @@ class Body {
 
   createTable() {
     const table = document.createElement('table');
-    const colgroup = this.createColGroup();
     const tbody = this.createTbody();
+    const colgroup = this.createColGroup();
     table.appendChild(colgroup.$el);
     table.appendChild(tbody);
     return table;
   }
 
   createColGroup() {
-    const colgroup = new ColGroup(this.props);
+    const { target, height: targetHeight } = this.props;
+    const hasScroll = targetHeight < this.bodyHeight;
+    const colgroup = new ColGroup({ hasScroll, ...this.props });
     this.colgroup = colgroup;
     return colgroup;
   }
@@ -45,12 +47,13 @@ class Body {
   createTbody() {
     const tbody = document.createElement('tbody');
     const { target, columns, data } = this.props;
+    const fontSize = getComputedStyle(target)['font-size'];
+    const height = parseInt(fontSize, 10) + 16;
+    this.bodyHeight = data.length * height;
     data.forEach((row, i) => {
       const num = i + 1;
       const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
       const tr = document.createElement('tr');
-      const fontSize = getComputedStyle(target)['font-size'];
-      const height = parseInt(fontSize, 10) + 16;
       tr.setAttribute('height', `${height}px`);
       addClass(tr, className);
       columns.forEach((column) => {

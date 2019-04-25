@@ -228,6 +228,7 @@ const createData = () => {
 const data = createData();
 
 const props = {
+  height: 500,
   columns,
   data
 };

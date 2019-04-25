@@ -20,8 +20,8 @@ class Head {
 
   createTable() {
     const table = document.createElement('table');
-    const colgroup = this.createColGroup();
     const tbody = this.createTbody();
+    const colgroup = this.createColGroup();
     table.appendChild(colgroup.$el);
     table.appendChild(tbody);
     this.table = table;
@@ -29,17 +29,20 @@ class Head {
   }
 
   createColGroup() {
-    const colgroup = new ColGroup(this.props);
+    const { target, height: targetHeight } = this.props;
+    const hasScroll = targetHeight < this.bodyHeight;
+    const colgroup = new ColGroup({ hasScroll, ...this.props });
     this.colgroup = colgroup;
     return colgroup;
   }
 
   createTbody() {
     const tbody = document.createElement('tbody');
-    const { columns } = this.props;
+    const { columns, data } = this.props;
     const tr = document.createElement('tr');
     const fontSize = getComputedStyle(this.props.target)['font-size'];
     const height = parseInt(fontSize, 10) + 20;
+    this.bodyHeight = data.length * height;
     columns.forEach((column) => {
       const th = document.createElement('th');
       th.setAttribute('data-column-name', column.name);
