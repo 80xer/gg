@@ -20,7 +20,8 @@ const columns = [
     title: '성별',
     name: 'gender',
     width: 60,
-    filter: true
+    filter: true,
+    align: 'center'
   },
   {
     title: '취미',
@@ -28,11 +29,13 @@ const columns = [
   },
   {
     title: '별명',
-    name: 'nickName'
+    name: 'nickName',
+    align: 'center'
   },
   {
     title: '전화번호',
-    name: 'phone'
+    name: 'phone',
+    align: 'right'
   }
 ];
 
