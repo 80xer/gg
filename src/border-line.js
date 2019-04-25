@@ -3,7 +3,7 @@
 import { addClass } from './utils';
 
 class BorderLine {
-  constructor({ type }) {
+  constructor({ type } = {}) {
     this.createBorderLine(type);
   }
 

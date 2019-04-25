@@ -1,19 +1,26 @@
 const columns = [
   {
     title: 'ID',
-    name: 'id'
+    name: 'id',
+    width: 40
   },
   {
     title: '도시',
-    name: 'city'
+    name: 'city',
+    width: 80,
+    filter: true
   },
   {
     title: '이름',
-    name: 'name'
+    name: 'name',
+    width: 80,
+    filter: true
   },
   {
     title: '성별',
-    name: 'gender'
+    name: 'gender',
+    width: 60,
+    filter: true
   },
   {
     title: '취미',

@@ -23,24 +23,35 @@ class ColGroup {
 
   setWidthOfColumns() {
     const { target, columns } = this.props;
-    if (!target) return;
+    if (!target) throw new Error('required target, in colgroup');
     const positionInfo = target.getBoundingClientRect();
     const targetWidth = positionInfo.width;
-    const widthColumns = ColGroup.calculateWidthOfColumns(targetWidth, columns.length);
+    const widthColumns = ColGroup.calculateWidthOfColumns(targetWidth - 14, columns);
     const cols = this.$el.querySelectorAll('col');
     cols.forEach((col, i) => {
       col.setAttribute('width', widthColumns[i]);
     });
   }
 
-  static calculateWidthOfColumns(totalWidth, countColumns) {
-    const width = Math.floor(totalWidth / countColumns);
+  static calculateWidthOfColumns(totalWidth, columns) {
+    const columnsWithWidth = columns.filter((column) => column.width);
+    const countColumns = columns.length - columnsWithWidth.length;
+    const totalWithoutWidth = columnsWithWidth.reduce(
+      (total, col) => total - col.width,
+      totalWidth
+    );
+    const width = Math.floor(totalWithoutWidth / countColumns);
     const result = [];
-    for (let i = 0; i < countColumns; i += 1) {
-      if (i === countColumns - 1 && width * countColumns < totalWidth) {
-        result.push(width + (totalWidth - width * countColumns));
+    for (let i = 0, j = 0; i < columns.length; i += 1) {
+      if (columns[i].width) {
+        result.push(columns[i].width);
       } else {
-        result.push(width);
+        if (j === countColumns - 1 && width * countColumns < totalWithoutWidth) {
+          result.push(width + (totalWithoutWidth - width * countColumns));
+        } else {
+          result.push(width);
+        }
+        j += 1;
       }
     }
     // 테이블의 우측 보더라인과 정확히 겹치기 위해 마지막 컬럼의 너비를 1px 줄인다.
