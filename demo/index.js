@@ -15,6 +15,11 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
     const data = json;
     const columns = [
       {
+        title: 'No',
+        field: 'gg-index',
+        width: 60
+      },
+      {
         title: '이름',
         field: 'lawyer.name',
         width: 60

@@ -11,10 +11,10 @@ import './style/gg.scss';
 class GG {
   constructor(props) {
     this.init(props);
-    if (validateProps(this.props)) {
-      this.createGrid();
-      this.drawGrid();
-    }
+    if (!validateProps(this.props)) return;
+
+    this.createGrid();
+    this.drawGrid();
   }
 
   init(props) {
@@ -22,10 +22,9 @@ class GG {
   }
 
   createBody() {
-    this.body = new Body(this.props);
     const targetHeight = this.props.height;
     const bodyHeight = targetHeight - this.head.height;
-    this.body.$area.style.height = `${bodyHeight}px`;
+    this.body = new Body({ ...this.props, bodyHeight });
   }
 
   createHead() {

@@ -230,7 +230,6 @@ const createData = () => {
 const data = createData();
 
 const props = {
-  height: 800,
   columns,
   data
 };
