@@ -74,9 +74,6 @@
   }
 
   .gg-body-area {
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
     .gg-body-total-height-bar {
       position: relative;
       top: 0px;
@@ -84,17 +81,13 @@
       width: 1px;
     }
     .gg-body-table-container {
-      position: absolute;
-      top: 0px;
-      margin-top: -1px;
-      .gg-body-table-start-pos,
-      .gg-body-table-end-pos {
-        position: relative;
-        height: 1px;
-      }
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
     table {
       tbody {
+        outline: none;
         tr {
           td {
             padding-top: 2px;

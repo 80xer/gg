@@ -26,13 +26,11 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       },
       {
         title: '주소',
-        field: 'lawyer.address.jibun',
-        width: 120
+        field: 'lawyer.address.jibun'
       },
       {
         title: '사무소명',
-        field: 'lawyer.company',
-        width: 120
+        field: 'lawyer.company'
       },
       {
         title: '아이디',
@@ -149,11 +147,11 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       {
         title: '프로필수정',
         field: 'lawyer._id',
-        width: 60,
+        width: 80,
         align: 'center',
         cellTemplate: (v) => `<a href="${v}" class="gotoProfileBtn">수정하기</a>`
       }
     ];
-    const sGrid = gg({ target: container, ...props, columns, data });
+    const sGrid = gg({ target: container, ...props, columns, data, height: 600 });
     console.log('sGrid :', sGrid);
   });

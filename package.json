@@ -56,6 +56,8 @@
     "yarn": ">=1.13.0"
   },
   "dependencies": {
+    "clusterize": "^0.1.2",
+    "clusterize.js": "^0.18.1",
     "intersection-observer": "^0.6.0",
     "node-sass": "^4.11.0"
   },

@@ -12,7 +12,6 @@ class GG {
   constructor(props) {
     this.init(props);
     if (!validateProps(this.props)) return;
-
     this.createGrid();
     this.drawGrid();
   }

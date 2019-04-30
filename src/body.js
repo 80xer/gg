@@ -3,45 +3,24 @@
 import { addClass } from './utils';
 import ColGroup from './colgroup';
 
+const Clusterize = require('clusterize.js');
+
 require('intersection-observer');
 
 class Body {
   constructor(props) {
+    this.line = 400;
+    this.lineCount = 100;
     this.props = props;
-    this.idx = 0;
+    this.idxFirst = 0;
+    this.idxLast = 0;
+    this.touchEnd = false;
+    this.touchStart = true;
     this.fontSize = getComputedStyle(this.props.target)['font-size'];
     this.cellHeight = parseInt(this.fontSize, 10) + 16;
     this.bodyAreaHeight = this.props.data.length * this.cellHeight;
+    this.lastUpdatePos = this.cellHeight * this.lineCount;
     this.createBodyArea();
-    this.scrollEventSet();
-  }
-
-  scrollEventSet() {
-    const el = this.$area;
-    const { tbody, createTr } = this;
-    let lastScrollTop = 0;
-    let idx = 0;
-    let lastUpdatePos = 0;
-    console.log('this.cellHeight :', this.cellHeight);
-    function scrollHandler() {
-      const st = el.pageYOffset || el.scrollTop;
-      if (st > lastScrollTop) {
-        if (st >= lastUpdatePos + this.cellHeight * 1) {
-          console.log(st, 'create tr');
-          this.tbody.appendChild(this.tbody.firstChild);
-          const top = parseInt(this.$container.style.top, 10) || 0;
-          console.log('top :', top);
-          this.$container.style.top = `${top + this.cellHeight * 1}px`;
-          lastUpdatePos += this.cellHeight * 1;
-        }
-      } else {
-        console.log(st, 'scroll up');
-      }
-      lastScrollTop = st <= 0 ? 0 : st;
-      idx += 1;
-    }
-
-    el.addEventListener('scroll', scrollHandler.bind(this), false);
   }
 
   createBodyArea() {
@@ -50,9 +29,9 @@ class Body {
     addClass(area, 'gg-body-area');
     area.style.height = `${bodyHeight}px`;
     const container = this.createTableContainer();
-    const totalHeightBar = this.createTotalHeightBar();
+    // const totalHeightBar = this.createTotalHeightBar();
     area.appendChild(container);
-    area.appendChild(totalHeightBar);
+    // area.appendChild(totalHeightBar);
     this.$area = area;
     return area;
   }
@@ -62,38 +41,45 @@ class Body {
     const container = document.createElement('div');
     container.style.height = `${bodyHeight}px`;
     addClass(container, 'gg-body-table-container');
-    const startPos = this.createStartPos();
+    this.container = container;
     const table = this.createTable();
-    const endPos = this.createEndPos();
-    container.appendChild(startPos);
     container.appendChild(table);
-    container.appendChild(endPos);
-    this.$container = container;
     return container;
-  }
-
-  createStartPos() {
-    const startPos = document.createElement('div');
-    addClass(startPos, 'gg-body-table-start-pos');
-    this.startPos = startPos;
-    return startPos;
-  }
-
-  createEndPos() {
-    const endPos = document.createElement('div');
-    addClass(endPos, 'gg-body-table-end-pos');
-    this.endPos = endPos;
-    return endPos;
   }
 
   createTable() {
     const table = document.createElement('table');
     const colgroup = this.createColGroup();
     const tbody = this.createTbody();
-    this.createTr(tbody);
+    const data = this.getTrArray();
+    const { container } = this;
+    this.setTbody(data);
     table.appendChild(colgroup.$el);
     table.appendChild(tbody);
+    this.table = table;
     return table;
+  }
+
+  setTbody(data) {
+    const { tbody, container } = this;
+    const clusterize = new Clusterize({
+      rows: data,
+      scrollElem: container,
+      contentElem: tbody
+    });
+  }
+
+  getTrArray() {
+    const { data, columns } = this.props;
+    const result = data.map((row, num) => {
+      const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
+      const tr = document.createElement('tr');
+      tr.setAttribute('height', `${this.cellHeight}px`);
+      addClass(tr, className);
+      this.createTd(tr, columns, row, num);
+      return tr.outerHTML;
+    });
+    return result;
   }
 
   createTotalHeightBar() {
@@ -133,25 +119,6 @@ class Body {
     const tbody = document.createElement('tbody');
     this.tbody = tbody;
     return tbody;
-  }
-
-  createTr(tbody) {
-    const { target, columns, data } = this.props;
-    let i = this.idx;
-    for (i = this.idx; i < this.idx + 400; i += 1) {
-      if (i >= data.length) {
-        return;
-      }
-      const num = i + 1;
-      const row = data[i];
-      const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
-      const tr = document.createElement('tr');
-      tr.setAttribute('height', `${this.cellHeight}px`);
-      addClass(tr, className);
-      this.createTd(tr, columns, row, i);
-      tbody.appendChild(tr);
-    }
-    this.idx = i;
   }
 
   createTd(tr, columns, row, i) {
