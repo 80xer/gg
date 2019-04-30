@@ -16,8 +16,9 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
     const columns = [
       {
         title: 'No',
-        field: 'gg-index',
-        width: 60
+        field: 'gg-origin-index',
+        width: 60,
+        value: (v) => v || 0
       },
       {
         title: '이름',
@@ -39,8 +40,7 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       },
       {
         title: '이메일주소',
-        field: 'email',
-        width: 120
+        field: 'email'
       },
       {
         title: '050번호',
@@ -149,9 +149,16 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
         field: 'lawyer._id',
         width: 80,
         align: 'center',
+        sortable: false,
         cellTemplate: (v) => `<a href="${v}" class="gotoProfileBtn">수정하기</a>`
       }
     ];
-    const sGrid = gg({ target: container, ...props, columns, data, height: 600 });
+    const sGrid = gg({
+      target: container,
+      ...props,
+      columns,
+      data, // : data.slice(0, 100),
+      height: 600
+    });
     console.log('sGrid :', sGrid);
   });

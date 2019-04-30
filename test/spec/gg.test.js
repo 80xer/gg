@@ -26,16 +26,32 @@ describe('gg init and create', () => {
 
   it('create body table when create instance with arguments', () => {
     const props = { target: container, ...sampleProps };
-    const gg3 = gg(props);
+    const grid = gg(props);
   });
-});
 
-describe('gg create', () => {
-  let props;
-  let gg4;
+  it('sortBody', () => {
+    const props = { target: container, ...sampleProps };
+    const grid = gg(props);
+    let direction = grid.sortBody('id');
+    expect(direction).toEqual('ascending');
+    direction = grid.sortBody('id', direction);
+    expect(direction).toEqual('descending');
+    direction = grid.sortBody('id', direction);
+    expect(direction).toEqual(undefined);
+  });
 
-  beforeEach(() => {
-    props = { target: container, ...sampleProps };
-    gg4 = gg(props);
+  it('click sort button', () => {
+    const props = { target: container, ...sampleProps };
+    const grid = gg(props);
+    const sortableButton = document.querySelector('#grid .gg-head-area .sort-button:first-child');
+    const unsortableButton = document.querySelector('#grid .gg-head-area th:first-child');
+    expect(sortableButton.dataset.sortdirection).toEqual(undefined);
+    sortableButton.click();
+    expect(sortableButton.dataset.sortdirection).toEqual('ascending');
+    sortableButton.click();
+    expect(sortableButton.dataset.sortdirection).toEqual('descending');
+    sortableButton.click();
+    expect(sortableButton.dataset.sortdirection).toEqual(undefined);
+    unsortableButton.click();
   });
 });

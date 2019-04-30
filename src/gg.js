@@ -4,8 +4,9 @@ import { props as validateProps } from './validate';
 import Head from './head';
 import Body from './body';
 import BorderLine from './border-line';
-import { addClass } from './utils';
-import defaultProps from './defaultProps';
+import sort from './sort';
+import { addClass, getValue } from './utils';
+import defaultProps, { defaultColumnProps } from './defaultProps';
 import './style/gg.scss';
 
 class GG {
@@ -13,10 +14,16 @@ class GG {
     this.init(props);
     if (!validateProps(this.props)) return;
     this.createGrid();
+    this.setEventHandler();
     this.drawGrid();
   }
 
   init(props) {
+    if (props && props.columns)
+      props.columns = props.columns.map((col) => ({ ...defaultColumnProps, ...col }));
+
+    if (props && props.data)
+      props.data = props.data.map((d, i) => ({ ...d, 'gg-origin-index': i }));
     this.props = { ...defaultProps, ...props };
   }
 
@@ -50,6 +57,33 @@ class GG {
     const container = document.createElement('div');
     addClass(container, 'gg-contents');
     this.$container = container;
+  }
+
+  setEventHandler() {
+    this.head.$area.addEventListener('click', (e) => {
+      if (e.target.hasAttribute('data-sortable')) {
+        const direction = this.sortBody(e.target.dataset.sortable, e.target.dataset.sortdirection);
+        if (direction) {
+          e.target.dataset.sortdirection = direction;
+        } else {
+          delete e.target.dataset.sortdirection;
+        }
+      }
+    });
+  }
+
+  sortBody(fields, direction) {
+    if (!direction) {
+      direction = 'ascending';
+    } else if (direction === 'ascending') {
+      direction = 'descending';
+    } else if (direction === 'descending') {
+      direction = undefined;
+    }
+
+    const data = sort(this.props.data, fields, direction);
+    this.body.setTbody(this.body.getTrArray(data));
+    return direction;
   }
 
   drawGrid() {

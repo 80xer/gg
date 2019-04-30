@@ -1,5 +1,13 @@
 const columns = [
   {
+    title: 'IDX.',
+    field: 'gg-origin-index'
+  },
+  {
+    title: 'NO.',
+    field: 'gg-index'
+  },
+  {
     title: 'ID',
     field: 'id',
     width: 40
@@ -37,7 +45,8 @@ const columns = [
   {
     title: '전화번호',
     field: 'phone',
-    align: 'right'
+    align: 'right',
+    sortable: false
   }
 ];
 

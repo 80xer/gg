@@ -67,6 +67,16 @@
             background: #00cccc;
             color: #fff;
             border-collapse: collapse;
+
+            .sort-button {
+              cursor: pointer;
+              width: 100%;
+              background: transparent;
+              padding: 10px 0;
+              color: inherit;
+              font-size: inherit;
+              font-weight: inherit;
+            }
           }
         }
       }

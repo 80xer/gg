@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import { addClass } from './utils';
+import { addClass, getValue } from './utils';
 import ColGroup from './colgroup';
 
 const Clusterize = require('clusterize.js');
@@ -9,17 +9,10 @@ require('intersection-observer');
 
 class Body {
   constructor(props) {
-    this.line = 400;
-    this.lineCount = 100;
     this.props = props;
-    this.idxFirst = 0;
-    this.idxLast = 0;
-    this.touchEnd = false;
-    this.touchStart = true;
     this.fontSize = getComputedStyle(this.props.target)['font-size'];
     this.cellHeight = parseInt(this.fontSize, 10) + 16;
     this.bodyAreaHeight = this.props.data.length * this.cellHeight;
-    this.lastUpdatePos = this.cellHeight * this.lineCount;
     this.createBodyArea();
   }
 
@@ -29,9 +22,7 @@ class Body {
     addClass(area, 'gg-body-area');
     area.style.height = `${bodyHeight}px`;
     const container = this.createTableContainer();
-    // const totalHeightBar = this.createTotalHeightBar();
     area.appendChild(container);
-    // area.appendChild(totalHeightBar);
     this.$area = area;
     return area;
   }
@@ -48,12 +39,12 @@ class Body {
   }
 
   createTable() {
+    const { data } = this.props;
     const table = document.createElement('table');
     const colgroup = this.createColGroup();
     const tbody = this.createTbody();
-    const data = this.getTrArray();
     const { container } = this;
-    this.setTbody(data);
+    this.setTbody(this.getTrArray(data));
     table.appendChild(colgroup.$el);
     table.appendChild(tbody);
     this.table = table;
@@ -69,8 +60,8 @@ class Body {
     });
   }
 
-  getTrArray() {
-    const { data, columns } = this.props;
+  getTrArray(data) {
+    const { columns } = this.props;
     const result = data.map((row, num) => {
       const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
       const tr = document.createElement('tr');
@@ -82,13 +73,6 @@ class Body {
     return result;
   }
 
-  createTotalHeightBar() {
-    const totalHeightBar = document.createElement('div');
-    addClass(totalHeightBar, 'gg-body-total-height-bar');
-    totalHeightBar.style.height = `${this.bodyAreaHeight}px`;
-    return totalHeightBar;
-  }
-
   createColGroup() {
     const { target, height: targetHeight } = this.props;
     const hasScroll = targetHeight < this.bodyAreaHeight;
@@ -98,7 +82,7 @@ class Body {
   }
 
   getValue(data, fields, template) {
-    const value = fields.split('.').reduce((obj, prop) => obj && obj[prop], data);
+    const value = getValue(data, fields);
     if (template) {
       return template(value);
     }
@@ -111,7 +95,11 @@ class Body {
       div.innerHTML = template(value);
       return div.firstChild;
     }
-    div.innerHTML = value || null;
+    if (value === 0) {
+      div.innerHTML = value;
+    } else {
+      div.innerHTML = value || null;
+    }
     return div;
   }
 

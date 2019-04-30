@@ -14,7 +14,7 @@ class ColGroup {
     const { columns, columnClassName } = this.props;
     columns.forEach((column) => {
       const col = document.createElement('col');
-      col.setAttribute(columnClassName, column.name);
+      col.setAttribute(columnClassName, column.field);
       col.textContent = column.title;
       colgroup.appendChild(col);
     });

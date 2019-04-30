@@ -36,6 +36,17 @@ class Head {
     return colgroup;
   }
 
+  createSortable(th, column) {
+    if (column.field === 'gg-index' || column.sortable === false) {
+      th.innerHTML = column.title;
+    } else {
+      th.innerHTML = `<button class="sort-button" data-sortable="${column.field}">${
+        column.title
+      }</button>`;
+    }
+    return th;
+  }
+
   createTbody() {
     const tbody = document.createElement('tbody');
     const { columns, data } = this.props;
@@ -45,11 +56,10 @@ class Head {
     this.bodyHeight = data.length * height;
     columns.forEach((column) => {
       const th = document.createElement('th');
-      th.setAttribute('data-column-name', column.name);
+      th.setAttribute('data-column-name', column.field);
       th.setAttribute('height', `${height}px`);
       th.style.lineHeight = fontSize;
-      th.textContent = column.title;
-      tr.appendChild(th);
+      tr.appendChild(this.createSortable(th, column));
     });
     tbody.appendChild(tr);
     this.tbody = tbody;
