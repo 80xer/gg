@@ -15,6 +15,6 @@ describe('Body', () => {
     const container = document.querySelector('#grid');
     const body = new Body({ target: container, ...sampleProps });
     const cellDiv = body.getCell();
-    expect(cellDiv.innerHTML).toEqual('');
+    expect(cellDiv).toEqual('<div></div>');
   });
 });

@@ -82,7 +82,7 @@ class GG {
     }
 
     const data = sort(this.props.data, fields, direction);
-    this.body.setTbody(this.body.getTrArray(data));
+    this.body.updateTbody(this.body.getTrArray(data));
     return direction;
   }
 

@@ -58,17 +58,19 @@ class Body {
       scrollElem: container,
       contentElem: tbody
     });
+    this.clusterize = clusterize;
+  }
+
+  updateTbody(data) {
+    this.clusterize.update(data);
   }
 
   getTrArray(data) {
     const { columns } = this.props;
     const result = data.map((row, num) => {
       const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
-      const tr = document.createElement('tr');
-      tr.setAttribute('height', `${this.cellHeight}px`);
-      addClass(tr, className);
-      this.createTd(tr, columns, row, num);
-      return tr.outerHTML;
+      const tds = this.createTd(columns, row, num);
+      return `<tr class="${className}" style="height:${this.cellHeight}px;">${tds}</tr>`;
     });
     return result;
   }
@@ -82,7 +84,7 @@ class Body {
   }
 
   getValue(data, fields, template) {
-    const value = getValue(data, fields);
+    const value = data[fields];
     if (template) {
       return template(value);
     }
@@ -90,15 +92,15 @@ class Body {
   }
 
   getCell(value, template) {
-    const div = document.createElement('div');
+    let div = '';
     if (template) {
-      div.innerHTML = template(value);
-      return div.firstChild;
+      div = `<div>${template(value)}</div>`;
+      return div;
     }
     if (value === 0) {
-      div.innerHTML = value;
+      div = `<div>${value}</div>`;
     } else {
-      div.innerHTML = value || null;
+      div = `<div>${value || ''}</div>`;
     }
     return div;
   }
@@ -109,16 +111,19 @@ class Body {
     return tbody;
   }
 
-  createTd(tr, columns, row, i) {
+  createTd(columns, row, i) {
+    let tds = '';
     columns.forEach((column) => {
-      const td = document.createElement('td');
+      let td = '';
       let { value } = column;
-      let cell = column.cellTemplate;
-      td.setAttribute('data-column-name', column.field);
+      let cell = '';
+      const dataSetColumnName = `data-column-name="${column.field}"`;
+      let style = '';
       if (column.align) {
-        td.style.textAlign = column.align;
+        style += `text-align:${column.align};`;
       }
-      td.style.lineHeight = this.fontSize;
+      style += `line-height:${this.fontSize};`;
+
       if (column.field === 'gg-index') {
         value = i + 1;
         cell = this.getCell(value, column.cellTemplate);
@@ -126,9 +131,11 @@ class Body {
         value = this.getValue(row, column.field, column.value);
         cell = this.getCell(value, column.cellTemplate);
       }
-      td.appendChild(cell);
-      tr.appendChild(td);
+      td = `<td style="${style}" ${dataSetColumnName}>${cell}</td>`;
+      // td.appendChild(cell);
+      tds += td;
     });
+    return tds;
   }
 }
 
