@@ -41,7 +41,7 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
     const columns = [
       {
         title: 'No',
-        field: 'gg-origin-index',
+        field: 'gg-index',
         width: 60,
         value: (v) => v || 0
       },
