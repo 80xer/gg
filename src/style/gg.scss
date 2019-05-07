@@ -77,6 +77,20 @@
               font-size: inherit;
               font-weight: inherit;
             }
+            .sort-button[data-sortdirection='descending'] {
+              &:after {
+                content: '▼';
+                font-size: 10px;
+                margin-left: 4px;
+              }
+            }
+            .sort-button[data-sortdirection='ascending'] {
+              &:after {
+                content: '▲';
+                font-size: 10px;
+                margin-left: 4px;
+              }
+            }
           }
         }
       }
@@ -99,6 +113,9 @@
       tbody {
         outline: none;
         tr {
+          &:hover {
+            background-color: #f3f3f3;
+          }
           td {
             padding-top: 2px;
             border-style: solid;

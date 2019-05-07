@@ -42,6 +42,7 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       {
         title: 'No',
         field: 'gg-index',
+        align: 'center',
         width: 60,
         value: (v) => v || 0
       },
@@ -172,7 +173,7 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       {
         title: '프로필수정',
         field: 'profileEdit',
-        width: 80,
+        width: 90,
         align: 'center',
         sortable: false,
         cellTemplate: (v) => `<a href="${v}" class="gotoProfileBtn">수정하기</a>`
