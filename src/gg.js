@@ -35,6 +35,7 @@ class GG {
 
   createHead() {
     this.head = new Head(this.props);
+    this.head.appendColResizer();
   }
 
   createBorderLine() {

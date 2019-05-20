@@ -97,6 +97,19 @@
         }
       }
     }
+
+    .gg-col-resize-container {
+      position: relative;
+      width: 0;
+      margin: 0;
+      .gg-resizer {
+        width: 7px;
+        position: absolute;
+        bottom: 1px;
+        opacity: 0;
+        cursor: col-resize;
+      }
+    }
   }
 
   .gg-body-area {

@@ -14,16 +14,8 @@ class Head {
     addClass(area, 'gg-head-area');
     const container = this.createTableContainer();
     area.appendChild(container);
-    // const space = this.createSpace();
-    // area.appendChild(space);
     this.$area = area;
     return area;
-  }
-
-  createSpace() {
-    const space = document.createElement('div');
-    space.style.width = '17px';
-    return space;
   }
 
   createTableContainer() {
@@ -33,6 +25,29 @@ class Head {
     const table = this.createTable();
     container.appendChild(table);
     return container;
+  }
+
+  appendColResizer() {
+    const resizer = this.createColResizer();
+    resizer.style.height = `${this.height}px`;
+    resizer.style.marginTop = `-${this.height}px`;
+    this.container.appendChild(resizer);
+  }
+
+  createColResizer() {
+    const resizer = document.createElement('div');
+    addClass(resizer, 'gg-col-resize-container');
+    let leftPos = 0;
+    const cols = this.colgroup.$el.querySelectorAll('col');
+    cols.forEach((cg) => {
+      const col = document.createElement('div');
+      addClass(col, 'gg-resizer');
+      leftPos += parseInt(cg.width || 0, 10) || 0;
+      col.style.left = `${leftPos}px`;
+      col.style.height = `${this.height}px`;
+      resizer.appendChild(col);
+    });
+    return resizer;
   }
 
   createTable() {

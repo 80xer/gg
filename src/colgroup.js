@@ -47,7 +47,7 @@ class ColGroup {
       (total, col) => total - col.width,
       totalWidth
     );
-    const width = Math.floor(totalWithoutWidth / countColumns);
+    const width = Math.abs(Math.floor(totalWithoutWidth / countColumns));
     const result = [];
     for (let i = 0, j = 0; i < columns.length; i += 1) {
       if (columns[i].width) {
