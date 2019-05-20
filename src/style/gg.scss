@@ -50,6 +50,8 @@
   .gg-head-area {
     background-color: #00cccc;
     border-bottom: 1px solid #dedede;
+    overflow-x: hidden;
+    overflow-y: scroll;
     table {
       tbody {
         tr {
@@ -106,8 +108,7 @@
     }
     .gg-body-table-container {
       position: relative;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: scroll;
     }
     table {
       tbody {

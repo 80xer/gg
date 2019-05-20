@@ -12,10 +12,27 @@ class Head {
   createHeadArea() {
     const area = document.createElement('div');
     addClass(area, 'gg-head-area');
-    const table = this.createTable();
-    area.appendChild(table);
+    const container = this.createTableContainer();
+    area.appendChild(container);
+    // const space = this.createSpace();
+    // area.appendChild(space);
     this.$area = area;
     return area;
+  }
+
+  createSpace() {
+    const space = document.createElement('div');
+    space.style.width = '17px';
+    return space;
+  }
+
+  createTableContainer() {
+    const container = document.createElement('div');
+    addClass(container, 'gg-head-table-container');
+    this.container = container;
+    const table = this.createTable();
+    container.appendChild(table);
+    return container;
   }
 
   createTable() {

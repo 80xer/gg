@@ -59,7 +59,7 @@ class GG {
     this.$container = container;
   }
 
-  setEventHandler() {
+  sortEventHandler() {
     this.head.$area.addEventListener('click', (e) => {
       if (e.target.hasAttribute('data-sortable')) {
         const direction = this.sortBody(e.target.dataset.sortable, e.target.dataset.sortdirection);
@@ -70,6 +70,17 @@ class GG {
         }
       }
     });
+  }
+
+  scrollEventHandler() {
+    this.body.container.addEventListener('scroll', (e) => {
+      this.head.$area.scrollTo(e.target.scrollLeft, 0);
+    });
+  }
+
+  setEventHandler() {
+    this.sortEventHandler();
+    this.scrollEventHandler();
   }
 
   sortBody(fields, direction) {
