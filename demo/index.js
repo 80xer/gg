@@ -49,7 +49,8 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       {
         title: '이름',
         field: 'name',
-        width: 60
+        width: 60,
+        fixed: true
       },
       {
         title: '주소',

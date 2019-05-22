@@ -1,11 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import { addClass } from './utils';
+import { addClass, hasClass } from './utils';
 import ColGroup from './colgroup';
 
 class Head {
   constructor(props) {
     this.props = props;
+    this.resizableColumnWidth = false;
+    this.startPointX = 0;
+    this.vectorPointX = 0;
     this.createHeadArea();
   }
 
@@ -31,6 +34,7 @@ class Head {
     const resizer = this.createColResizer();
     resizer.style.height = `${this.height}px`;
     resizer.style.marginTop = `-${this.height}px`;
+    this.resizer = resizer;
     this.container.appendChild(resizer);
   }
 
@@ -39,13 +43,16 @@ class Head {
     addClass(resizer, 'gg-col-resize-container');
     let leftPos = 0;
     const cols = this.colgroup.$el.querySelectorAll('col');
-    cols.forEach((cg) => {
-      const col = document.createElement('div');
-      addClass(col, 'gg-resizer');
-      leftPos += parseInt(cg.width || 0, 10) || 0;
-      col.style.left = `${leftPos}px`;
-      col.style.height = `${this.height}px`;
-      resizer.appendChild(col);
+    cols.forEach((cg, i) => {
+      if (i < cols.length - 1) {
+        const col = document.createElement('div');
+        addClass(col, 'gg-resizer');
+        col.dataset.colIndex = i;
+        leftPos += parseInt(cg.width || 0, 10) || 0;
+        col.style.left = `${leftPos - 3}px`;
+        col.style.height = `${this.height}px`;
+        resizer.appendChild(col);
+      }
     });
     return resizer;
   }
