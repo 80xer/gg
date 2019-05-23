@@ -1,42 +1,33 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import { addClass, hasClass } from './utils';
 import Head from './head';
 import Body from './body';
-import BorderLine from './border-line';
-import sort from './sort';
 
-class Grid {
+class Side {
   constructor(props) {
     this.props = props;
-    this.createGrid();
+    this.createSide();
   }
 
   createHead() {
     this.head = new Head(this.props);
     this.head.appendColResizer();
+    return this.head;
   }
 
   createBody() {
     const targetHeight = this.props.height;
     const bodyHeight = targetHeight - this.head.height;
     this.body = new Body({ ...this.props, bodyHeight });
+    return this.body;
   }
 
-  createBorderLine() {
-    this.topLine = new BorderLine({ type: 'top' });
-    this.rightLine = new BorderLine({ type: 'right' });
-    this.bottomLine = new BorderLine({ type: 'bottom' });
-    this.leftLine = new BorderLine({ type: 'left' });
-  }
-
-  createGrid() {
-    const grid = document.createElement('div');
-    addClass(grid, 'gg-grid');
-    this.grid = grid;
-    this.createHead();
-    this.createBody();
-    this.createBorderLine();
+  createSide() {
+    const side = document.createElement('div');
+    addClass(side, 'gg-side');
+    this.$side = side;
+    this.$side.appendChild(this.createHead().$area);
+    this.$side.appendChild(this.createBody().$area);
   }
 
   sortEventHandler(body) {
@@ -53,13 +44,15 @@ class Grid {
   }
 
   scrollEventHandler() {
-    this.body.container.addEventListener('scroll', (e) => {
-      this.head.$area.scrollTo(e.target.scrollLeft, 0);
-    });
+    if (this.body && this.body.container) {
+      this.body.container.addEventListener('scroll', (e) => {
+        this.head.$area.scrollTo(e.target.scrollLeft, 0);
+      });
+    }
   }
 
   resizeColumnEventHandler() {
-    const { head, body } = this;
+    const { head } = this;
     const headArea = head.$area;
     headArea.addEventListener('mousedown', (e) => {
       this.resizeMouseDown(e.target, e.clientX);
@@ -82,7 +75,7 @@ class Grid {
       head.bodyCols = body.colgroup.$el.querySelectorAll('col');
       head.resizeColIdx = head.resizeTarget.dataset.colIndex;
       head.resizableColumnWidth = true;
-      head.startColLeft = [].map.call(head.resizer.querySelectorAll('.gg-resizer'), (rs, i) =>
+      head.startColLeft = [].map.call(head.resizer.querySelectorAll('.gg-resizer'), (rs) =>
         parseInt(rs.style.left, 10)
       );
       head.startColWidth = parseInt(
@@ -93,9 +86,8 @@ class Grid {
     }
   }
 
-  resizeClear(target) {
+  resizeClear() {
     const { head } = this;
-    const isResizer = hasClass(target, 'gg-resizer');
     head.resizableColumnWidth = false;
     head.startColWidth = 0;
     head.startColLeft = [];
@@ -123,4 +115,4 @@ class Grid {
   }
 }
 
-export default Grid;
+export default Side;

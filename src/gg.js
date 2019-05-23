@@ -1,11 +1,8 @@
 /* eslint-disable class-methods-use-this */
-/* eslint-disable no-unused-vars */
+import BorderLine from './border-line';
 import { props as validateProps } from './validate';
 import Side from './side';
-import Head from './head';
-import Body from './body';
-import BorderLine from './border-line';
-import { addClass, hasClass, getValue } from './utils';
+import { addClass } from './utils';
 import defaultProps, { defaultColumnProps } from './defaultProps';
 import './style/gg.scss';
 
@@ -13,8 +10,11 @@ class GG {
   constructor(props) {
     this.init(props);
     if (!validateProps(this.props)) return;
+    const { target } = this.props;
+    addClass(target, 'gg');
     this.createSide();
     this.setEventHandler();
+    this.createBorderLine();
     this.drawGrid();
   }
 
@@ -28,15 +28,21 @@ class GG {
   }
 
   createSide() {
-    const { target } = this.props;
-    addClass(target, 'gg');
     this.rSide = new Side(this.props);
+    addClass(this.rSide.$side, 'gg-rside');
+  }
+
+  createBorderLine() {
+    this.topLine = new BorderLine({ type: 'top' });
+    this.rightLine = new BorderLine({ type: 'right' });
+    this.bottomLine = new BorderLine({ type: 'bottom' });
+    this.leftLine = new BorderLine({ type: 'left' });
   }
 
   createContainer() {
     const container = document.createElement('div');
-    addClass(container, 'gg-contents');
-    this.$container = container;
+    addClass(container, 'gg-container');
+    return container;
   }
 
   resizeColumnEventHandler() {
@@ -59,11 +65,9 @@ class GG {
 
   drawGrid() {
     const { target } = this.props;
-    const positionInfo = target.getBoundingClientRect();
-    const { head, body, topLine, rightLine, bottomLine, leftLine } = this.rSide;
-    const container = this.createContainer();
-    this.$container.appendChild(head.$area);
-    this.$container.appendChild(body.$area);
+    const { rSide, topLine, rightLine, bottomLine, leftLine } = this;
+    this.$container = this.createContainer();
+    this.$container.appendChild(rSide.$side);
     this.$container.appendChild(topLine.$line);
     this.$container.appendChild(rightLine.$line);
     this.$container.appendChild(bottomLine.$line);
