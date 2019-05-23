@@ -31,12 +31,12 @@ describe('gg init and create', () => {
 
   it('sortBody', () => {
     const props = { target: container, ...sampleProps };
-    const grid = gg(props);
-    let direction = grid.sortBody('id');
+    const { rSide } = gg(props);
+    let direction = rSide.body.sortBody('id');
     expect(direction).toEqual('ascending');
-    direction = grid.sortBody('id', direction);
+    direction = rSide.body.sortBody('id', direction);
     expect(direction).toEqual('descending');
-    direction = grid.sortBody('id', direction);
+    direction = rSide.body.sortBody('id', direction);
     expect(direction).toEqual(undefined);
   });
 
@@ -57,32 +57,32 @@ describe('gg init and create', () => {
 
   it('resize MouseDown', () => {
     const props = { target: container, ...sampleProps };
-    const grid = gg(props);
+    const { rSide } = gg(props);
     const resizer = document.querySelector('#grid .gg-head-area .gg-resizer:first-child');
-    grid.resizeMouseDown(resizer, 50);
-    expect(grid.head.resizeTarget).toEqual(resizer);
+    rSide.resizeMouseDown(resizer, 50);
+    expect(rSide.head.resizeTarget).toEqual(resizer);
   });
 
   it('resize clear', () => {
     const props = { target: container, ...sampleProps };
-    const grid = gg(props);
+    const { rSide } = gg(props);
     const resizer = document.querySelector('#grid .gg-head-area .gg-resizer:first-child');
-    grid.resizeMouseDown(resizer, 50);
-    expect(grid.head.resizeTarget).toEqual(resizer);
-    grid.resizeClear(resizer);
-    expect(grid.head.resizeTarget).toEqual(null);
+    rSide.resizeMouseDown(resizer, 50);
+    expect(rSide.head.resizeTarget).toEqual(resizer);
+    rSide.resizeClear(resizer);
+    expect(rSide.head.resizeTarget).toEqual(null);
   });
 
   it('resize columns', () => {
     const props = { target: container, ...sampleProps };
-    const grid = gg(props);
+    const { rSide } = gg(props);
     const startPointX = 50;
     const endPointX = 100;
     const resizer = document.querySelector('#grid .gg-head-area .gg-resizer:first-child');
     const startLeft = parseInt(resizer.style.left, 10);
-    grid.resizeMouseDown(resizer, startPointX);
-    expect(grid.head.resizeTarget).toEqual(resizer);
-    grid.resizeColumns(endPointX);
+    rSide.resizeMouseDown(resizer, startPointX);
+    expect(rSide.head.resizeTarget).toEqual(resizer);
+    rSide.resizeColumns(endPointX);
     const endLeft = parseInt(resizer.style.left, 10);
     expect(endLeft - startLeft).toEqual(endPointX - startPointX);
   });

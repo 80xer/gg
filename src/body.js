@@ -2,6 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import { addClass, getValue } from './utils';
 import ColGroup from './colgroup';
+import sort from './sort';
 
 const Clusterize = require('clusterize.js');
 
@@ -49,6 +50,20 @@ class Body {
     table.appendChild(tbody);
     this.table = table;
     return table;
+  }
+
+  sortBody(fields, direction) {
+    if (!direction) {
+      direction = 'ascending';
+    } else if (direction === 'ascending') {
+      direction = 'descending';
+    } else if (direction === 'descending') {
+      direction = undefined;
+    }
+
+    const data = sort(this.props.data, fields, direction);
+    this.updateTbody(this.getTrArray(data));
+    return direction;
   }
 
   setTbody(data) {
