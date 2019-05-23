@@ -30,10 +30,14 @@ class Side {
     this.$side.appendChild(this.createBody().$area);
   }
 
-  sortEventHandler(body) {
+  sortEventHandler(lSideBody, rSideBody) {
     this.head.$area.addEventListener('click', (e) => {
       if (e.target.hasAttribute('data-sortable')) {
-        const direction = body.sortBody(e.target.dataset.sortable, e.target.dataset.sortdirection);
+        const direction = lSideBody.sortBody(
+          e.target.dataset.sortable,
+          e.target.dataset.sortdirection
+        );
+        rSideBody.sortBody(e.target.dataset.sortable, e.target.dataset.sortdirection);
         if (direction) {
           e.target.dataset.sortdirection = direction;
         } else {
