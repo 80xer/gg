@@ -83,8 +83,8 @@ class GG {
   }
 
   scrollEventHandler() {
-    this.lSide.scrollEventHandler();
-    this.rSide.scrollEventHandler();
+    this.lSide.scrollEventHandler(this.rSide);
+    this.rSide.scrollEventHandler(this.lSide);
   }
 
   setEventHandler() {

@@ -1,3 +1,5 @@
+/* eslint-disable prefer-rest-params */
+/* eslint-disable func-names */
 /* eslint-disable camelcase */
 export function addClass(el, className) {
   el.classList.add(className);

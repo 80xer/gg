@@ -47,12 +47,26 @@ class Side {
     });
   }
 
-  scrollEventHandler() {
-    if (this.body && this.body.container) {
-      this.body.container.addEventListener('scroll', (e) => {
-        this.head.$area.scrollTo(e.target.scrollLeft, 0);
-      });
-    }
+  scrollEventHandler(side) {
+    let timeout;
+    this.scrollListener = (e) => {
+      clearTimeout(timeout);
+      const { target: source } = e;
+      const headArea = this.head.$area;
+      headArea.scrollTo(source.scrollLeft, 0);
+
+      side.removeScrollEventHandler();
+      side.body.container.scrollTop = source.scrollTop;
+      timeout = setTimeout(() => {
+        side.body.container.addEventListener('scroll', side.scrollListener);
+      }, 100);
+    };
+
+    this.body.container.addEventListener('scroll', this.scrollListener);
+  }
+
+  removeScrollEventHandler() {
+    this.body.container.removeEventListener('scroll', this.scrollListener);
   }
 
   resizeColumnEventHandler() {
