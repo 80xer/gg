@@ -28,8 +28,26 @@ class GG {
   }
 
   createSide() {
-    this.rSide = new Side(this.props);
+    this.splitColumns();
+    const rsideProps = Object.assign({}, this.props, { columns: this.props.columns.slice(4) });
+    this.rSide = new Side(rsideProps);
     addClass(this.rSide.$side, 'gg-rside');
+  }
+
+  splitColumns() {
+    const { columns } = this.props;
+    let i = columns.length - 1;
+    for (; i >= 0; i -= 1) {
+      if (columns[i].fixed) break;
+    }
+
+    const lSideColumns = columns.slice(0, i + 1);
+    const rSideColumns = columns.slice(i + 1);
+
+    return {
+      lSideColumns,
+      rSideColumns
+    };
   }
 
   createBorderLine() {

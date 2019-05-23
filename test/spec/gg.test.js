@@ -86,4 +86,20 @@ describe('gg init and create', () => {
     const endLeft = parseInt(resizer.style.left, 10);
     expect(endLeft - startLeft).toEqual(endPointX - startPointX);
   });
+
+  it('get lside and rside without fixed columns', () => {
+    const props = { target: container, ...sampleProps };
+    const grid = gg(props);
+    const { lSideColumns, rSideColumns } = grid.splitColumns();
+    expect(lSideColumns.length).toEqual(0);
+    expect(rSideColumns.length).toEqual(sampleProps.columns.length);
+  });
+  it('get lside and rside with fixed columns', () => {
+    const props = { target: container, ...sampleProps };
+    props.columns[2].fixed = true;
+    const grid = gg(props);
+    const { lSideColumns, rSideColumns } = grid.splitColumns();
+    expect(lSideColumns.length).toEqual(3);
+    expect(rSideColumns.length).toEqual(props.columns.length - 3);
+  });
 });
