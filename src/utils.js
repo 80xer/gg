@@ -10,6 +10,10 @@ export function hasClass(el, className) {
   return el.classList.contains(className);
 }
 
+export function removeClass(el, className) {
+  el.classList.remove(className);
+}
+
 export function getValue(obj, fields) {
   return fields.split('.').reduce((_obj, prop) => _obj && _obj[prop], obj);
 }

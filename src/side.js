@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { addClass, hasClass } from './utils';
+import { addClass, hasClass, removeClass } from './utils';
 import Head from './head';
 import Body from './body';
 
@@ -51,6 +51,7 @@ class Side {
     let timeout;
     this.scrollListener = (e) => {
       clearTimeout(timeout);
+
       const { target: source } = e;
       const headArea = this.head.$area;
       headArea.scrollTo(source.scrollLeft, 0);
@@ -115,7 +116,6 @@ class Side {
 
   resizeColumns(pointX) {
     const { head } = this;
-    console.log('head :', head.resizableColumnWidth);
     if (head.resizableColumnWidth) {
       head.vectorPointX = pointX - head.startPointX;
       // 리사이저 위치
@@ -131,6 +131,38 @@ class Side {
       // 본문 컬럼
       head.bodyCols[head.resizeColIdx].setAttribute('width', newWidth);
     }
+  }
+
+  // 부모 노드에서 tr찾아 반환.
+  getTr(src) {
+    let parent = src.parentNode;
+    while (true) {
+      if (parent == null) {
+        return src;
+      }
+      if (parent.nodeName === 'TR') {
+        return parent;
+      }
+      parent = parent.parentNode;
+    }
+  }
+
+  hoverEventHandler(side) {
+    const changeBackgroundColorOfTr = (e) => {
+      const tgt = this.getTr(e.target);
+      if (tgt.nodeName === 'TR') {
+        if (hasClass(tgt, 'hover')) {
+          if (side) removeClass(side.body.tbody.querySelectorAll('tr')[tgt.rowIndex], 'hover');
+          removeClass(tgt, 'hover');
+        } else {
+          if (side) addClass(side.body.tbody.querySelectorAll('tr')[tgt.rowIndex], 'hover');
+          addClass(tgt, 'hover');
+        }
+      }
+    };
+
+    this.body.$area.addEventListener('mouseover', changeBackgroundColorOfTr);
+    this.body.$area.addEventListener('mouseout', changeBackgroundColorOfTr);
   }
 }
 

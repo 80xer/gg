@@ -4,7 +4,8 @@ import { addClass, getValue } from './utils';
 import ColGroup from './colgroup';
 import sort from './sort';
 
-const Clusterize = require('clusterize.js');
+// 스크롤 가상 렌더링은 컬럼 고정 형태일때 퍼포먼스 문제가 발생하여 사용하지 않는다.
+// const Clusterize = require('clusterize.js');
 
 require('intersection-observer');
 
@@ -40,12 +41,12 @@ class Body {
   }
 
   createTable() {
-    const { data } = this.props;
+    const { data, pagination } = this.props;
     const table = document.createElement('table');
     const colgroup = this.createColGroup();
     const tbody = this.createTbody();
     const { container } = this;
-    this.setTbody(this.getTrArray(data));
+    this.setTbody(this.getTrArray(data, pagination.perPage, pagination.pageIdx));
     table.appendChild(colgroup.$el);
     table.appendChild(tbody);
     this.table = table;
@@ -62,32 +63,50 @@ class Body {
     }
 
     const data = sort(this.props.data, fields, direction);
-    this.updateTbody(this.getTrArray(data));
+    const { pagination } = this.props;
+    this.updateTbody(this.getTrArray(data, pagination.perPage, pagination.pageIdx));
     return direction;
   }
 
   setTbody(data) {
     const { tbody, container } = this;
-    const clusterize = new Clusterize({
-      rows: data,
-      scrollElem: container,
-      contentElem: tbody
-    });
-    this.clusterize = clusterize;
+    tbody.innerHTML = data;
+    // data.forEach((dt) => {
+    //   tbody.appendChild(dt);
+    // });
+    // const clusterize = new Clusterize({
+    //   rows: data,
+    //   scrollElem: container,
+    //   contentElem: tbody
+    // });
+    // this.clusterize = clusterize;
   }
 
   updateTbody(data) {
-    this.clusterize.update(data);
+    const { tbody } = this;
+    tbody.innerHTML = data;
   }
 
-  getTrArray(data) {
+  getTrString(data) {
     const { columns } = this.props;
-    const result = data.map((row, num) => {
+    const result = data.reduce((acc, val, num) => {
       const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
-      const tds = this.createTd(columns, row, num);
+      const tds = this.createTd(columns, val, num);
+      return `${acc}<tr class="${className}" style="height:${this.cellHeight}px;">${tds}</tr>`;
+    }, '');
+    return result;
+  }
+
+  getTrArray(data, perPage = data.length, pageIdx = 1) {
+    const { columns } = this.props;
+    const startIdx = (pageIdx - 1) * perPage;
+    const endIdx = pageIdx * perPage - 1;
+    const result = data.slice(startIdx, endIdx + 1).map((row, num) => {
+      const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
+      const tds = this.createTd(columns, row, startIdx + num);
       return `<tr class="${className}" style="height:${this.cellHeight}px;">${tds}</tr>`;
     });
-    return result;
+    return result.join('');
   }
 
   createColGroup() {

@@ -2,6 +2,7 @@
 import BorderLine from './border-line';
 import { props as validateProps } from './validate';
 import Side from './side';
+import Pagination from './pagination';
 import { addClass } from './utils';
 import defaultProps, { defaultColumnProps } from './defaultProps';
 import './style/gg.scss';
@@ -16,6 +17,7 @@ class GG {
     this.setEventHandler();
     this.createBorderLine();
     this.drawGrid();
+    this.createPagination();
   }
 
   init(props) {
@@ -24,13 +26,17 @@ class GG {
 
     if (props && props.data)
       props.data = props.data.map((d, i) => ({ ...d, 'gg-origin-index': i }));
+
+    if (props && props.pagination)
+      props.pagination = { ...defaultProps.pagination, ...props.pagination };
+
     this.props = { ...defaultProps, ...props };
   }
 
   createSide() {
     const { lSideColumns, rSideColumns } = this.splitColumns();
-    const lSideProps = Object.assign({}, this.props, { columns: lSideColumns });
-    const rSideProps = Object.assign({}, this.props, { columns: rSideColumns });
+    const lSideProps = Object.assign({}, this.props, { columns: lSideColumns, side: 'left' });
+    const rSideProps = Object.assign({}, this.props, { columns: rSideColumns, side: 'right' });
     this.lSide = new Side(lSideProps);
     this.rSide = new Side(rSideProps);
     const lSideWidth = lSideColumns.reduce((sumWidth, col) => col.width + sumWidth, 0);
@@ -87,15 +93,22 @@ class GG {
     this.rSide.scrollEventHandler(this.lSide);
   }
 
+  hoverEventHandler() {
+    this.lSide.hoverEventHandler(this.rSide);
+    this.rSide.hoverEventHandler(this.lSide);
+  }
+
   setEventHandler() {
     this.sortEventHandler();
     this.scrollEventHandler();
     this.resizeColumnEventHandler();
+    this.hoverEventHandler();
   }
 
   drawGrid() {
     const { target } = this.props;
     const { lSide, rSide, topLine, rightLine, bottomLine, leftLine } = this;
+
     this.$container = this.createContainer();
     this.$container.appendChild(lSide.$side);
     this.$container.appendChild(rSide.$side);
@@ -104,6 +117,14 @@ class GG {
     this.$container.appendChild(bottomLine.$line);
     this.$container.appendChild(leftLine.$line);
     target.appendChild(this.$container);
+  }
+
+  createPagination() {
+    const { target, pagination } = this.props;
+    if (!pagination.view) return;
+
+    this.pagination = new Pagination({ ...pagination, rowCount: this.props.data.length });
+    target.appendChild(this.pagination.$area);
   }
 }
 

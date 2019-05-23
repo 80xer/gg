@@ -184,9 +184,14 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       target: container,
       ...props,
       columns,
-      // data,
-      data: data.slice(0, 100),
-      height: 600
+      data,
+      // data: data.slice(0, 300),
+      height: 600,
+      pagination: {
+        perPage: 20,
+        pageIdx: 1,
+        view: true
+      }
     });
     console.log('sGrid :', sGrid);
   });
