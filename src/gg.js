@@ -28,9 +28,18 @@ class GG {
   }
 
   createSide() {
-    this.splitColumns();
-    const rsideProps = Object.assign({}, this.props, { columns: this.props.columns.slice(4) });
-    this.rSide = new Side(rsideProps);
+    const { lSideColumns, rSideColumns } = this.splitColumns();
+    const lSideProps = Object.assign({}, this.props, { columns: lSideColumns });
+    const rSideProps = Object.assign({}, this.props, { columns: rSideColumns });
+    this.lSide = new Side(lSideProps);
+    this.rSide = new Side(rSideProps);
+    const lSideWidth = lSideColumns.reduce((sumWidth, col) => col.width + sumWidth, 0);
+    const lSideBottomSpace = document.createElement('div');
+    addClass(lSideBottomSpace, 'gg-lside-bottom-space');
+    this.lSide.$side.appendChild(lSideBottomSpace);
+    this.lSide.$side.style.width = `${lSideWidth}px`;
+    this.rSide.$side.style.marginLeft = `${lSideWidth}px`;
+    addClass(this.lSide.$side, 'gg-lside');
     addClass(this.rSide.$side, 'gg-rside');
   }
 
@@ -64,14 +73,17 @@ class GG {
   }
 
   resizeColumnEventHandler() {
+    this.lSide.resizeColumnEventHandler();
     this.rSide.resizeColumnEventHandler();
   }
 
   sortEventHandler() {
+    this.lSide.sortEventHandler(this.rSide.body);
     this.rSide.sortEventHandler(this.rSide.body);
   }
 
   scrollEventHandler() {
+    this.lSide.scrollEventHandler();
     this.rSide.scrollEventHandler();
   }
 
@@ -83,8 +95,9 @@ class GG {
 
   drawGrid() {
     const { target } = this.props;
-    const { rSide, topLine, rightLine, bottomLine, leftLine } = this;
+    const { lSide, rSide, topLine, rightLine, bottomLine, leftLine } = this;
     this.$container = this.createContainer();
+    this.$container.appendChild(lSide.$side);
     this.$container.appendChild(rSide.$side);
     this.$container.appendChild(topLine.$line);
     this.$container.appendChild(rightLine.$line);

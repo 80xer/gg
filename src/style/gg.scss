@@ -9,6 +9,25 @@
   .gg-container {
     position: relative;
     height: 100%;
+
+    .gg-lside {
+      position: absolute;
+      overflow: hidden;
+      .gg-head-area {
+        margin-right: -17px;
+      }
+      .gg-body-area {
+        margin-right: -17px;
+      }
+      .gg-lside-bottom-space {
+        position: absolute;
+        height: 15px;
+        background-color: #eee;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+    }
     .gg-border-line {
       position: absolute;
       background-color: #dedede;

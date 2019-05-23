@@ -97,6 +97,7 @@ class Side {
 
   resizeColumns(pointX) {
     const { head } = this;
+    console.log('head :', head.resizableColumnWidth);
     if (head.resizableColumnWidth) {
       head.vectorPointX = pointX - head.startPointX;
       // 리사이저 위치

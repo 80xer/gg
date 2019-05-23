@@ -43,8 +43,11 @@ describe('gg init and create', () => {
   it('click sort button', () => {
     const props = { target: container, ...sampleProps };
     const grid = gg(props);
-    const sortableButton = document.querySelector('#grid .gg-head-area .sort-button:first-child');
-    const unsortableButton = document.querySelector('#grid .gg-head-area th:first-child');
+    const sortableButton = document.querySelector(
+      '#grid .gg-rside .gg-head-area .sort-button:first-child'
+    );
+    const unsortableButton = document.querySelector('#grid .gg-rside .gg-head-area th:first-child');
+    console.log('sortableButton :', sortableButton);
     expect(sortableButton.dataset.sortdirection).toEqual(undefined);
     sortableButton.click();
     expect(sortableButton.dataset.sortdirection).toEqual('ascending');
