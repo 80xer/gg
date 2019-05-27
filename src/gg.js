@@ -13,10 +13,15 @@ class GG {
     if (!validateProps(this.props)) return;
     const { target } = this.props;
     addClass(target, 'gg');
-    this.createSide();
-    this.setEventHandler();
+    const { lSideColumns, rSideColumns } = this.splitColumns();
+    this.lSideColumns = lSideColumns;
+    this.rSideColumns = rSideColumns;
+    this.createLside();
     this.createBorderLine();
-    this.drawGrid();
+    this.drawLside();
+    this.createRside();
+    this.drawRside();
+    this.setEventHandler();
     this.createPagination();
   }
 
@@ -33,20 +38,29 @@ class GG {
     this.props = { ...defaultProps, ...props };
   }
 
-  createSide() {
-    const { lSideColumns, rSideColumns } = this.splitColumns();
-    const lSideProps = Object.assign({}, this.props, { columns: lSideColumns, side: 'left' });
+  createRside() {
+    const { rSideColumns } = this;
     const rSideProps = Object.assign({}, this.props, { columns: rSideColumns, side: 'right' });
-    this.lSide = new Side(lSideProps);
-    this.rSide = new Side(rSideProps);
-    const lSideWidth = lSideColumns.reduce((sumWidth, col) => col.width + sumWidth, 0);
-    const lSideBottomSpace = document.createElement('div');
-    addClass(lSideBottomSpace, 'gg-lside-bottom-space');
-    this.lSide.$side.appendChild(lSideBottomSpace);
-    this.lSide.$side.style.width = `${lSideWidth}px`;
-    this.rSide.$side.style.marginLeft = `${lSideWidth}px`;
-    addClass(this.lSide.$side, 'gg-lside');
+    this.rSide = new Side({
+      ...rSideProps,
+      otherSide: this.lSide
+    });
+    this.rSide.$side.style.marginLeft = this.lSide.$side.style.width;
     addClass(this.rSide.$side, 'gg-rside');
+  }
+
+  createLside() {
+    const { lSideColumns } = this;
+    const lSideProps = Object.assign({}, this.props, { columns: lSideColumns, side: 'left' });
+    this.lSide = new Side(lSideProps);
+    const lSideWidth = lSideColumns.reduce((sumWidth, col) => col.width + sumWidth, 0);
+    if (this.props.scroll !== false) {
+      const lSideBottomSpace = document.createElement('div');
+      addClass(lSideBottomSpace, 'gg-lside-bottom-space');
+      this.lSide.$side.appendChild(lSideBottomSpace);
+    }
+    this.lSide.$side.style.width = `${lSideWidth}px`;
+    addClass(this.lSide.$side, 'gg-lside');
   }
 
   splitColumns() {
@@ -105,17 +119,22 @@ class GG {
     this.hoverEventHandler();
   }
 
-  drawGrid() {
-    const { target } = this.props;
-    const { lSide, rSide, topLine, rightLine, bottomLine, leftLine } = this;
+  drawRside() {
+    const { rSide, topLine, rightLine, bottomLine, leftLine } = this;
 
-    this.$container = this.createContainer();
-    this.$container.appendChild(lSide.$side);
     this.$container.appendChild(rSide.$side);
     this.$container.appendChild(topLine.$line);
     this.$container.appendChild(rightLine.$line);
     this.$container.appendChild(bottomLine.$line);
     this.$container.appendChild(leftLine.$line);
+  }
+
+  drawLside() {
+    const { target } = this.props;
+    const { lSide } = this;
+
+    this.$container = this.createContainer();
+    this.$container.appendChild(lSide.$side);
     target.appendChild(this.$container);
   }
 

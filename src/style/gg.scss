@@ -70,8 +70,8 @@
   .gg-head-area {
     background-color: #00cccc;
     border-bottom: 1px solid #dedede;
+    overflow: scroll;
     overflow-x: hidden;
-    overflow-y: scroll;
     table {
       tbody {
         tr {

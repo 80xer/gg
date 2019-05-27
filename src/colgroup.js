@@ -31,7 +31,9 @@ class ColGroup {
     const { target, columns, data } = this.props;
     if (!target) throw new Error('required target, in colgroup');
     const positionInfo = target.getBoundingClientRect();
-    const targetWidth = positionInfo.width;
+    let targetWidth = positionInfo.width;
+    if (this.props.otherSide) targetWidth -= parseInt(this.props.otherSide.$side.style.width, 10);
+
     const scrollBarWidth = this.scrollBarWidth();
     const widthColumns = ColGroup.calculateWidthOfColumns(targetWidth - scrollBarWidth, columns);
     const cols = this.$el.querySelectorAll('col');

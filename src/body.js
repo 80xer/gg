@@ -34,6 +34,9 @@ class Body {
     const container = document.createElement('div');
     container.style.height = `${bodyHeight}px`;
     addClass(container, 'gg-body-table-container');
+    if (this.props.scroll === false) {
+      container.style.overflow = 'hidden';
+    }
     this.container = container;
     const table = this.createTable();
     container.appendChild(table);

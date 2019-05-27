@@ -6,19 +6,34 @@ import Body from './body';
 class Side {
   constructor(props) {
     this.props = props;
+    const targetHeight = this.props.height;
+    this.scroll = { x: false, y: false };
+    if (targetHeight) {
+      this.bodyHeight = targetHeight - 40; // head height 40px
+      if (this.bodyHeight < this.props.pagination.perPage * 30 + this.getScrollAreaHeight()) {
+        this.scroll.y = true;
+      }
+    } else {
+      this.bodyHeight = this.props.pagination.perPage * 30 + this.getScrollAreaHeight();
+    }
     this.createSide();
   }
 
+  getScrollAreaHeight() {
+    if (this.props.scroll === false) {
+      return 1;
+    }
+    return 16;
+  }
+
   createHead() {
-    this.head = new Head(this.props);
+    this.head = new Head({ ...this.props });
     this.head.appendColResizer();
     return this.head;
   }
 
   createBody() {
-    const targetHeight = this.props.height;
-    const bodyHeight = targetHeight - this.head.height;
-    this.body = new Body({ ...this.props, bodyHeight });
+    this.body = new Body({ ...this.props, bodyHeight: this.bodyHeight });
     return this.body;
   }
 

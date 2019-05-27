@@ -17,6 +17,9 @@ class Head {
     addClass(area, 'gg-head-area');
     const container = this.createTableContainer();
     area.appendChild(container);
+    if (this.props.scroll === false) {
+      area.style.overflow = 'hidden';
+    }
     this.$area = area;
     return area;
   }

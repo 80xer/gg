@@ -1,5 +1,4 @@
 const defaultProps = {
-  height: 300,
   pagination: {
     view: false,
     pageIdx: 1,
