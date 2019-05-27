@@ -47,15 +47,15 @@ class Head {
     let leftPos = 0;
     const cols = this.colgroup.$el.querySelectorAll('col');
     cols.forEach((cg, i) => {
-      if (i < cols.length - 1) {
-        const col = document.createElement('div');
-        addClass(col, 'gg-resizer');
-        col.dataset.colIndex = i;
-        leftPos += parseInt(cg.width || 0, 10) || 0;
-        col.style.left = `${leftPos - 3}px`;
-        col.style.height = `${this.height}px`;
-        resizer.appendChild(col);
-      }
+      // if (i < cols.length - 1) {
+      const col = document.createElement('div');
+      addClass(col, 'gg-resizer');
+      col.dataset.colIndex = i;
+      leftPos += parseInt(cg.width || 0, 10) || 0;
+      col.style.left = `${leftPos - 3}px`;
+      col.style.height = `${this.height}px`;
+      resizer.appendChild(col);
+      // }
     });
     return resizer;
   }

@@ -98,8 +98,8 @@ class GG {
   }
 
   sortEventHandler() {
-    this.lSide.sortEventHandler(this.lSide.body, this.rSide.body);
-    this.rSide.sortEventHandler(this.lSide.body, this.rSide.body);
+    this.lSide.sortEventHandler(this.lSide, this.rSide);
+    this.rSide.sortEventHandler(this.lSide, this.rSide);
   }
 
   scrollEventHandler() {

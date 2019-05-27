@@ -49,7 +49,11 @@ class Side {
     this.$side.appendChild(this.createBody().$area);
   }
 
-  sortEventHandler(lSideBody, rSideBody) {
+  sortEventHandler(lSide, rSide) {
+    const lSideHead = lSide.head;
+    const rSideHead = rSide.head;
+    const lSideBody = lSide.body;
+    const rSideBody = rSide.body;
     this.head.$area.addEventListener('click', (e) => {
       if (e.target.hasAttribute('data-sortable')) {
         const direction = lSideBody.sortBody(
@@ -57,6 +61,10 @@ class Side {
           e.target.dataset.sortdirection
         );
         rSideBody.sortBody(e.target.dataset.sortable, e.target.dataset.sortdirection);
+        const sortedLcolumn = lSideHead.$area.querySelector('.sort-button[data-sortdirection]');
+        if (sortedLcolumn) delete sortedLcolumn.dataset.sortdirection;
+        const sortedRcolumn = rSideHead.$area.querySelector('.sort-button[data-sortdirection]');
+        if (sortedRcolumn) delete sortedRcolumn.dataset.sortdirection;
         if (direction) {
           e.target.dataset.sortdirection = direction;
         } else {

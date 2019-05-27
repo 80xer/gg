@@ -35,7 +35,7 @@ describe('ColGroup', () => {
     ];
     const result = ColGroup.calculateWidthOfColumns(totalWidth, columns);
     expect(result.length).toEqual(columns.length);
-    expect(result[0]).toEqual(33);
-    expect(result[columns.length - 1]).toEqual(34 - 1);
+    expect(result[0]).toEqual(120);
+    expect(result[columns.length - 1]).toEqual(120 - 1);
   });
 });

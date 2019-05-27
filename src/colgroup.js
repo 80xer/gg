@@ -55,11 +55,12 @@ class ColGroup {
       if (columns[i].width) {
         result.push(columns[i].width);
       } else {
-        if (j === countColumns - 1 && width * countColumns < totalWithoutWidth) {
-          result.push(width + (totalWithoutWidth - width * countColumns));
-        } else {
-          result.push(width);
-        }
+        // if (j === countColumns - 1 && width * countColumns < totalWithoutWidth) {
+        //   result.push(width + (totalWithoutWidth - width * countColumns));
+        // } else {
+        //   result.push(width);
+        // }
+        result.push(120);
         j += 1;
       }
     }
