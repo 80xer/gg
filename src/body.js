@@ -74,15 +74,6 @@ class Body {
   setTbody(data) {
     const { tbody, container } = this;
     tbody.innerHTML = data;
-    // data.forEach((dt) => {
-    //   tbody.appendChild(dt);
-    // });
-    // const clusterize = new Clusterize({
-    //   rows: data,
-    //   scrollElem: container,
-    //   contentElem: tbody
-    // });
-    // this.clusterize = clusterize;
   }
 
   updateTbody(data) {
@@ -173,6 +164,10 @@ class Body {
       tds += td;
     });
     return tds;
+  }
+
+  gotoPageOfBody(idx) {
+    this.updateTbody(this.getTrArray(this.props.data, this.props.pagination.perPage, idx));
   }
 }
 

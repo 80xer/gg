@@ -138,11 +138,21 @@ class GG {
     target.appendChild(this.$container);
   }
 
+  paginationCallBack(idx) {
+    this.lSide.body.gotoPageOfBody(idx);
+    this.rSide.body.gotoPageOfBody(idx);
+  }
+
   createPagination() {
     const { target, pagination } = this.props;
     if (!pagination.view) return;
 
-    this.pagination = new Pagination({ ...pagination, rowCount: this.props.data.length });
+    this.pagination = new Pagination({
+      ...pagination,
+      rowCount: this.props.data.length,
+      grid: this,
+      callback: this.paginationCallBack
+    });
     target.appendChild(this.pagination.$area);
   }
 }

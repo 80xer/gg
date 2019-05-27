@@ -37,6 +37,10 @@ class Side {
     return this.body;
   }
 
+  gotoPageOfBody(idx) {
+    this.body.gotoPage(idx);
+  }
+
   createSide() {
     const side = document.createElement('div');
     addClass(side, 'gg-side');

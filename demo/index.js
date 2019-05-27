@@ -187,7 +187,7 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       // columns: columns.slice(0, 4),
       data,
       // data: data.slice(0, 300),
-      height: 400,
+      // height: 400,
       // scroll: false,
       pagination: {
         perPage: 20,
