@@ -34,11 +34,12 @@ class Head {
   }
 
   appendColResizer() {
-    const resizer = this.createColResizer();
-    resizer.style.height = `${this.height}px`;
-    resizer.style.marginTop = `-${this.height}px`;
-    this.resizer = resizer;
-    this.container.appendChild(resizer);
+    const resizerContainer = this.createColResizer();
+    resizerContainer.style.height = `${this.height}px`;
+    resizerContainer.style.marginTop = `-${this.height}px`;
+    this.resizerContainer = resizerContainer;
+    this.resizers = this.resizerContainer.querySelectorAll('.gg-resizer');
+    this.container.appendChild(resizerContainer);
   }
 
   createColResizer() {

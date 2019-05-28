@@ -19,6 +19,16 @@ class Side {
     this.createSide();
   }
 
+  setWidth(value) {
+    this.$side.style.width = `${value}px`;
+    this.width = value;
+  }
+
+  setMarginLeft(value) {
+    this.$side.style.marginLeft = `${value}px`;
+    this.marginLeft = value;
+  }
+
   getScrollAreaHeight() {
     if (this.props.scroll === false) {
       return 1;
@@ -97,21 +107,6 @@ class Side {
     this.body.container.removeEventListener('scroll', this.scrollListener);
   }
 
-  resizeColumnEventHandler() {
-    const { head } = this;
-    const headArea = head.$area;
-    headArea.addEventListener('mousedown', (e) => {
-      this.resizeMouseDown(e.target, e.clientX);
-    });
-    headArea.addEventListener('mouseup', (e) => {
-      this.resizeClear(e.target);
-    });
-
-    headArea.addEventListener('mousemove', (e) => {
-      this.resizeColumns(e.clientX);
-    });
-  }
-
   resizeMouseDown(target, startPointX) {
     const { head, body } = this;
     const isResizer = hasClass(target, 'gg-resizer');
@@ -121,7 +116,7 @@ class Side {
       head.bodyCols = body.colgroup.$el.querySelectorAll('col');
       head.resizeColIdx = head.resizeTarget.dataset.colIndex;
       head.resizableColumnWidth = true;
-      head.startColLeft = [].map.call(head.resizer.querySelectorAll('.gg-resizer'), (rs) =>
+      head.startColLeft = [].map.call(head.resizerContainer.querySelectorAll('.gg-resizer'), (rs) =>
         parseInt(rs.style.left, 10)
       );
       head.startColWidth = parseInt(
@@ -139,24 +134,30 @@ class Side {
     head.startColLeft = [];
     head.vectorPointX = 0;
     head.resizeTarget = null;
+    this.setWidth(parseInt(this.$side.style.width, 10));
   }
 
-  resizeColumns(pointX) {
-    const { head } = this;
+  resizeColumns(pointX, rSide) {
+    const { head, $side, width } = this;
     if (head.resizableColumnWidth) {
       head.vectorPointX = pointX - head.startPointX;
+      const { vectorPointX, resizeColIdx, headCols, bodyCols } = head;
       // 리사이저 위치
-      head.resizer.querySelectorAll('.gg-resizer').forEach((rs, i) => {
-        if (i >= head.resizeColIdx) {
-          const newLeft = head.startColLeft[i] + head.vectorPointX;
-          rs.style.left = `${newLeft}px`;
+      head.resizers.forEach((rs, i) => {
+        if (i >= resizeColIdx) {
+          rs.style.left = `${head.startColLeft[i] + vectorPointX}px`;
         }
       });
+      if (rSide) {
+        // console.log('left side resize');
+        $side.style.width = `${width + vectorPointX}px`;
+        rSide.setMarginLeft(parseInt($side.style.width, 10));
+      }
       // 헤더 컬럼
-      const newWidth = head.startColWidth + head.vectorPointX;
-      head.headCols[head.resizeColIdx].setAttribute('width', newWidth);
+      const newWidth = head.startColWidth + vectorPointX;
+      headCols[resizeColIdx].setAttribute('width', newWidth);
       // 본문 컬럼
-      head.bodyCols[head.resizeColIdx].setAttribute('width', newWidth);
+      bodyCols[resizeColIdx].setAttribute('width', newWidth);
     }
   }
 

@@ -7,6 +7,7 @@ export function addClass(el, className) {
 }
 
 export function hasClass(el, className) {
+  if (!el.classList) return false;
   return el.classList.contains(className);
 }
 

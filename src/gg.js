@@ -3,7 +3,7 @@ import BorderLine from './border-line';
 import { props as validateProps } from './validate';
 import Side from './side';
 import Pagination from './pagination';
-import { addClass } from './utils';
+import { addClass, hasClass } from './utils';
 import defaultProps, { defaultColumnProps } from './defaultProps';
 import './style/gg.scss';
 
@@ -45,7 +45,8 @@ class GG {
       ...rSideProps,
       otherSide: this.lSide
     });
-    this.rSide.$side.style.marginLeft = this.lSide.$side.style.width;
+    // this.rSide.$side.style.marginLeft = this.lSide.$side.style.width;
+    this.rSide.setMarginLeft(parseInt(this.lSide.$side.style.width, 10));
     addClass(this.rSide.$side, 'gg-rside');
   }
 
@@ -59,7 +60,8 @@ class GG {
       addClass(lSideBottomSpace, 'gg-lside-bottom-space');
       this.lSide.$side.appendChild(lSideBottomSpace);
     }
-    this.lSide.$side.style.width = `${lSideWidth}px`;
+    // this.lSide.$side.style.width = `${lSideWidth}px`;
+    this.lSide.setWidth(lSideWidth);
     addClass(this.lSide.$side, 'gg-lside');
   }
 
@@ -92,9 +94,49 @@ class GG {
     return container;
   }
 
+  detectSideOnClickResizer(target) {
+    let elm = target;
+    while (elm) {
+      if (hasClass(elm, 'gg-side')) {
+        if (hasClass(elm, 'gg-lside')) {
+          return 'lSide';
+        }
+        if (hasClass(elm, 'gg-rside')) {
+          return 'rSide';
+        }
+        break;
+      }
+      elm = elm.parentNode;
+    }
+    return false;
+  }
+
   resizeColumnEventHandler() {
-    this.lSide.resizeColumnEventHandler();
-    this.rSide.resizeColumnEventHandler();
+    // this.lSide.resizeColumnEventHandler();
+    // this.rSide.resizeColumnEventHandler();
+    const { target } = this.props;
+    target.addEventListener('mousedown', (e) => {
+      if (hasClass(e.target, 'gg-resizer')) {
+        this.resizingSide = this.detectSideOnClickResizer(e.target);
+        if (this.resizingSide) {
+          this[this.resizingSide].resizeMouseDown(e.target, e.clientX);
+        }
+      }
+    });
+    target.addEventListener('mouseup', (e) => {
+      if (this.resizingSide) {
+        this[this.resizingSide].resizeClear(e.target);
+        this.resizingSide = false;
+      }
+    });
+
+    target.addEventListener('mousemove', (e) => {
+      if (this.resizingSide === 'lSide') {
+        this[this.resizingSide].resizeColumns(e.clientX, this.rSide);
+      } else if (this.resizingSide === 'rSide') {
+        this[this.resizingSide].resizeColumns(e.clientX);
+      }
+    });
   }
 
   sortEventHandler() {
