@@ -140,8 +140,8 @@ class GG {
   }
 
   sortEventHandler() {
-    this.lSide.sortEventHandler(this.lSide, this.rSide);
-    this.rSide.sortEventHandler(this.lSide, this.rSide);
+    this.lSide.sortEventHandler(this.lSide, this.rSide, this.initPageNation());
+    this.rSide.sortEventHandler(this.lSide, this.rSide, this.initPageNation());
   }
 
   scrollEventHandler() {
@@ -180,9 +180,17 @@ class GG {
     target.appendChild(this.$container);
   }
 
-  paginationCallBack(idx) {
-    this.lSide.body.gotoPageOfBody(idx);
-    this.rSide.body.gotoPageOfBody(idx);
+  paginationCallBack() {
+    return (idx) => {
+      this.lSide.body.gotoPageOfBody(idx);
+      this.rSide.body.gotoPageOfBody(idx);
+    };
+  }
+
+  initPageNation() {
+    return () => {
+      this.pagination.initPageButtons();
+    };
   }
 
   createPagination() {
@@ -192,8 +200,7 @@ class GG {
     this.pagination = new Pagination({
       ...pagination,
       rowCount: this.props.data.length,
-      grid: this,
-      callback: this.paginationCallBack
+      callback: this.paginationCallBack()
     });
     target.appendChild(this.pagination.$area);
   }

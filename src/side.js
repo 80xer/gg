@@ -59,7 +59,7 @@ class Side {
     this.$side.appendChild(this.createBody().$area);
   }
 
-  sortEventHandler(lSide, rSide) {
+  sortEventHandler(lSide, rSide, callback) {
     const lSideHead = lSide.head;
     const rSideHead = rSide.head;
     const lSideBody = lSide.body;
@@ -80,6 +80,7 @@ class Side {
         } else {
           delete e.target.dataset.sortdirection;
         }
+        callback();
       }
     });
   }

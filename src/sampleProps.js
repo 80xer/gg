@@ -240,6 +240,11 @@ const data = createData();
 
 const props = {
   columns,
-  data
+  data,
+  pagination: {
+    perPage: 20,
+    pageIdx: 1,
+    view: true
+  }
 };
 export default props;

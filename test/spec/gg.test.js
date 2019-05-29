@@ -47,7 +47,6 @@ describe('gg init and create', () => {
       '#grid .gg-rside .gg-head-area .sort-button:first-child'
     );
     const unsortableButton = document.querySelector('#grid .gg-rside .gg-head-area th:first-child');
-    console.log('sortableButton :', sortableButton);
     expect(sortableButton.dataset.sortdirection).toEqual(undefined);
     sortableButton.click();
     expect(sortableButton.dataset.sortdirection).toEqual('ascending');
