@@ -54,7 +54,7 @@ class Pagination {
     }
 
     if (pageIdx === pageCount) {
-      buttonsHTML = `${buttonsHTML}<span class="gg-page-btn gg-is-disabled gg-next"><span class="gg-ico-next">next</span><span class="gg-is-disabled-mask"></span></span><span class="gg-page-btn gg-is-disabled gg-last"><span class="gg-ico-first">last</span><span class="gg-is-disabled-mask"></span></span>`;
+      buttonsHTML = `${buttonsHTML}<span class="gg-page-btn gg-is-disabled gg-next"><span class="gg-ico-next">next</span><span class="gg-is-disabled-mask"></span></span><span class="gg-page-btn gg-is-disabled gg-last"><span class="gg-ico-last">last</span><span class="gg-is-disabled-mask"></span></span>`;
     } else {
       buttonsHTML = `${buttonsHTML}<a href="#" class="gg-page-btn gg-next" data-page-goto="next"><span class="gg-ico-next">next</span></a><a href="#" class="gg-page-btn gg-last" data-page-goto="last"><span class="gg-ico-last">last</span></a>`;
     }
