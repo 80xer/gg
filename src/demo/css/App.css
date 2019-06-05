@@ -1,0 +1,22 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+body {
+  padding: 20px;
+}
+
+#root {
+  margin: auto;
+  width: 100%;
+  font-size: 14px;
+}
+
+.gotoProfileBtn {
+  border: 1px solid #aaa;
+  padding: 1px 4px;
+  color: #999;
+  text-decoration: none;
+}
