@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import ColGroup from '../colgroup';
-import sampleProps from '../../demo/sampleProps';
+import sampleProps from './sampleProps';
 
 describe('ColGroup', () => {
   it('throw error when call setWidthOfColumns without target', () => {

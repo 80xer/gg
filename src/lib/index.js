@@ -1,2 +1,2 @@
-import App from './App';
-export default App;
+import gg from './gg';
+export default gg;

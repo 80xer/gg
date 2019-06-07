@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Pagination from '../pagination';
 import defaultProps from '../defaultProps';
-import sampleProps from '../../demo/sampleProps';
+import sampleProps from './sampleProps';
 
 let container;
 
@@ -22,7 +22,7 @@ describe('Pagination', () => {
 
   describe('get visible index array', () => {
     let visibleIndices;
-    let curIdx;
+    let pageIdx;
     let paginationObj;
     beforeEach(() => {
       const props = { ...defaultProps, ...sampleProps };
@@ -30,12 +30,13 @@ describe('Pagination', () => {
       pagination.perPage = 10;
       const rowCount = props.data.length;
       const visibleCount = 5;
-      curIdx = 9;
+      pageIdx = 9;
+      pagination.pageIdx = pageIdx;
       paginationObj = new Pagination({ ...props.pagination, rowCount });
       visibleIndices = paginationObj.getVisibleIndex(
         paginationObj.pageCount,
         5,
-        curIdx
+        pageIdx
       );
     });
     it('get less then visibleCount', () => {
@@ -43,7 +44,7 @@ describe('Pagination', () => {
     });
 
     it('include current index in visibleIdices', () => {
-      const findIndex = visibleIndices.findIndex(i => i === curIdx);
+      const findIndex = visibleIndices.findIndex(i => i === pageIdx);
       expect(findIndex).toBeGreaterThan(-1);
     });
 

@@ -2,11 +2,17 @@
 module.exports = function(wallaby) {
   return {
     files: [
-      './src/**/*.js',
-      { pattern: 'src/**/*.js', instrument: true, load: true, ignore: false },
+      './src/lib/**/*.js',
+      '!./src/lib/tests/**/*.test.js',
+      {
+        pattern: './src/lib/**/*.js',
+        instrument: true,
+        load: true,
+        ignore: false,
+      },
     ],
 
-    tests: ['./src/**/tests/**/*.test.js'],
+    tests: ['./src/lib/tests/**/*.test.js'],
 
     env: {
       type: 'node',
@@ -18,7 +24,16 @@ module.exports = function(wallaby) {
     setup() {
       const jestConfig = require('./package.json').jest;
       // for example:
-      jestConfig.globals = { __DEV__: true };
+      // jestConfig.globals = { __DEV__: true };
+      Object.keys(jestConfig).forEach(conf =>
+        Object.keys(jestConfig[conf]).forEach(
+          k =>
+            (jestConfig[conf][k] = jestConfig[conf][k].replace(
+              '<rootDir>',
+              wallaby.localProjectDir
+            ))
+        )
+      );
       wallaby.testFramework.configure(jestConfig);
     },
     compilers: {

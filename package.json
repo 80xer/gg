@@ -106,11 +106,11 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
+      "src/lib/**/*.{js,jsx,ts,tsx}",
       "!src/lib/index.js",
       "!src/utils/**",
       "!src/**/*.d.ts",
-      "!**/tests/**"
+      "!src/lib/tests/**"
     ],
     "resolver": "jest-pnp-resolver",
     "setupFiles": [
@@ -118,7 +118,7 @@
     ],
     "setupFilesAfterEnv": [],
     "testMatch": [
-      "<rootDir>/src/**/tests/**/*.{js,jsx,ts,tsx}"
+      "<rootDir>/src/lib/**/tests/**/*.{js,jsx,ts,tsx}"
     ],
     "testEnvironment": "jest-environment-jsdom-fourteen",
     "transform": {
@@ -132,8 +132,7 @@
     ],
     "modulePaths": [],
     "moduleNameMapper": {
-      "^react-native$": "react-native-web",
-      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+      "\\.(css|scss)$": "identity-obj-proxy"
     },
     "moduleFileExtensions": [
       "web.js",
@@ -145,7 +144,8 @@
       "json",
       "web.jsx",
       "jsx",
-      "node"
+      "node",
+      "scss"
     ],
     "watchPlugins": [
       "jest-watch-typeahead/filename",

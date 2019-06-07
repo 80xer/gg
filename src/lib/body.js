@@ -85,18 +85,6 @@ class Body {
     tbody.innerHTML = data;
   }
 
-  getTrString(data) {
-    const { columns } = this.props;
-    const result = data.reduce((acc, val, num) => {
-      const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
-      const tds = this.createTd(columns, val, num);
-      return `${acc}<tr class="${className}" style="height:${
-        this.cellHeight
-      }px;">${tds}</tr>`;
-    }, '');
-    return result;
-  }
-
   getTrArray(data, perPage = data.length, pageIdx = 1) {
     const { columns } = this.props;
     const startIdx = (pageIdx - 1) * perPage;

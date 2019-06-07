@@ -18,10 +18,14 @@ class Pagination {
 
   createPageButtons(pageCount, pageIdx, area) {
     let buttonsHTML = '';
-    const visibleIndex = this.getVisibleIndex(pageCount, this.visiblePages, pageIdx);
+    const visibleIndex = this.getVisibleIndex(
+      pageCount,
+      this.visiblePages,
+      pageIdx
+    );
     this.visibleIndex = visibleIndex;
     this.pageIndex = pageIdx;
-    visibleIndex.forEach((i) => {
+    visibleIndex.forEach(i => {
       let classNames = 'gg-page-btn';
       if (i === pageIdx) {
         classNames += ' gg-is-selected';
@@ -30,7 +34,6 @@ class Pagination {
         buttonsHTML += `<a href="#" class="${classNames}" data-page-index=${i}>${i}</a>`;
       }
     });
-
     // 이전 페이지네이션 버튼
     if (visibleIndex[0] > 1) {
       buttonsHTML = `<a href="#" class="gg-page-btn gg-prev-ellip" data-page-goto="prev-ellip"><span class="gg-ico-ellip">...</span></a>${buttonsHTML}`;
@@ -64,12 +67,16 @@ class Pagination {
 
   createPageButtonGroup() {
     const { rowCount, perPage, pageIdx } = this.props;
-    const pageCount = rowCount % perPage === 0 ? rowCount / perPage : Math.ceil(rowCount / perPage);
+    const pageCount =
+      rowCount % perPage === 0
+        ? rowCount / perPage
+        : Math.ceil(rowCount / perPage);
     this.pageCount = pageCount;
     this.createPageButtons(pageCount, pageIdx, this.$area);
   }
 
   getVisibleIndex(pageCount, visibleCount, curIndex) {
+    console.log('curIndex :', curIndex);
     let start;
     let end;
     const stdMiddle = Math.floor(visibleCount / 2);
@@ -108,7 +115,7 @@ class Pagination {
   }
 
   setEventHandler() {
-    this.$area.addEventListener('click', (e) => {
+    this.$area.addEventListener('click', e => {
       const target = this.detectPageButtonOnClick(e.target);
       if (target) {
         if (target.dataset.pageIndex) {
@@ -151,7 +158,11 @@ class Pagination {
               default:
                 break;
             }
-            this.createPageButtons(this.pageCount, parseInt(pageIndex, 10), this.$area);
+            this.createPageButtons(
+              this.pageCount,
+              parseInt(pageIndex, 10),
+              this.$area
+            );
             this.props.callback(pageIndex);
           }
         }
