@@ -258,11 +258,11 @@ const props = {
     x: true,
     y: false,
   },
-  pagination: false,
-  // pagination: {
-  //   perPage: 20,
-  //   pageIdx: 1,
-  //   view: true,
-  // },
+  // pagination: false,
+  pagination: {
+    perPage: 20,
+    pageIdx: 1,
+    view: true,
+  },
 };
 export default props;
