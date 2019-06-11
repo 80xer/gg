@@ -188,7 +188,6 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       columns,
       // columns: columns.slice(0, 4),
       data: data.slice(0, 300),
-      // data: data.slice(0, 300),
       // height: 400,
       scroll: {
         x: true,
@@ -200,5 +199,4 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
         view: true,
       },
     });
-    console.log('sGrid :', sGrid);
   });
