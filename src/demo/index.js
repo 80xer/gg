@@ -187,16 +187,19 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       ...props,
       columns,
       // columns: columns.slice(0, 4),
-      data: data.slice(0, 300),
-      // height: 400,
+      // data: data.slice(0, 300),
+      data,
+      height: 400,
       scroll: {
         x: true,
         y: false,
       },
-      pagination: {
-        perPage: 20,
-        pageIdx: 1,
-        view: true,
-      },
+      pagination: false,
+      virtualScrolling: true,
+      // pagination: {
+      //   perPage: 20,
+      //   pageIdx: 1,
+      //   view: true,
+      // },
     });
   });
