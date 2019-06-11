@@ -76,7 +76,6 @@ class Pagination {
   }
 
   getVisibleIndex(pageCount, visibleCount, curIndex) {
-    console.log('curIndex :', curIndex);
     let start;
     let end;
     const stdMiddle = Math.floor(visibleCount / 2);
