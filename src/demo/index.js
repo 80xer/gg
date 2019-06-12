@@ -5,6 +5,8 @@ import props from './sampleProps';
 import './css/App.css';
 
 const container = document.querySelector('#root');
+const container2 = document.querySelector('#root2');
+const container3 = document.querySelector('#root3');
 
 function paddy(num, padlen, padchar) {
   const padChar = typeof padchar !== 'undefined' ? padchar : '0';
@@ -192,14 +194,55 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       height: 400,
       scroll: {
         x: true,
-        y: false,
+        y: true,
       },
       pagination: false,
       virtualScrolling: true,
+      // virtualPageCount: 3,
       // pagination: {
       //   perPage: 20,
       //   pageIdx: 1,
       //   view: true,
       // },
+    });
+    const sGrid2 = gg({
+      target: container2,
+      ...props,
+      columns,
+      // columns: columns.slice(0, 4),
+      // data: data.slice(0, 300),
+      data,
+      height: 400,
+      scroll: {
+        x: true,
+        y: true,
+      },
+      pagination: false,
+      // virtualScrolling: true,
+      // pagination: {
+      //   perPage: 20,
+      //   pageIdx: 1,
+      //   view: true,
+      // },
+    });
+    const sGrid3 = gg({
+      target: container3,
+      ...props,
+      columns,
+      // columns: columns.slice(0, 4),
+      // data: data.slice(0, 300),
+      data,
+      height: 400,
+      scroll: {
+        x: true,
+        y: false,
+      },
+      // pagination: false,
+      // virtualScrolling: true,
+      pagination: {
+        perPage: 20,
+        pageIdx: 1,
+        view: true,
+      },
     });
   });

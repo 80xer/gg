@@ -8,10 +8,12 @@ body {
   padding: 20px;
 }
 
-#root {
-  margin: auto;
+#root,
+#root2,
+#root3 {
+  margin: auto auto 30px;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .gotoProfileBtn {

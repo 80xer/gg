@@ -10,6 +10,7 @@ class Side {
     this.scroll = { x: false, y: false };
     const fontSize = getComputedStyle(this.props.target)['font-size'];
     const cellHeight = parseInt(fontSize, 10) + 16;
+    this.cellHeight = cellHeight;
     if (targetHeight) {
       this.bodyHeight = targetHeight - 40; // head height 40px
       if (
@@ -49,7 +50,11 @@ class Side {
   }
 
   createBody() {
-    this.body = new Body({ ...this.props, bodyHeight: this.bodyHeight });
+    this.body = new Body({
+      ...this.props,
+      bodyHeight: this.bodyHeight,
+      cellHeight: this.cellHeight,
+    });
     return this.body;
   }
 
@@ -100,25 +105,71 @@ class Side {
 
   scrollEventHandler(side) {
     let timeout;
+    const cntHeight = parseInt(this.body.container.style.height, 10);
+    let sPos = 0;
+    const cHeight = this.cellHeight;
+    const rCount = this.body.rowCountPerPage;
+    const trg = parseInt(this.body.virtualPageCount / 2, 10);
+
+    const changePosition = () => {
+      const tbodyHeight = getComputedStyle(this.body.tbody)['height'];
+      const scrollPos = this.body.startTrIdx * cHeight;
+
+      if (tbodyHeight + scrollPos >= cntHeight) {
+        this.body.changeTablePosition(cntHeight - tbodyHeight);
+        side.body.changeTablePosition(cntHeight - tbodyHeight);
+      } else {
+        this.body.changeTablePosition(scrollPos);
+        side.body.changeTablePosition(scrollPos);
+
+        this.body.table.style.transform = 'translateY(' + scrollPos + 'px)';
+        side.body.table.style.transform = 'translateY(' + scrollPos + 'px)';
+      }
+    };
+
     this.scrollListener = e => {
       clearTimeout(timeout);
-
+      side.removeScrollEventHandler();
+      let changed = false;
       const { target: source } = e;
       const headArea = this.head.$area;
+      const pos = source.scrollTop;
+
       headArea.scrollTo(source.scrollLeft, 0);
 
-      side.removeScrollEventHandler();
-      side.body.container.scrollTop = source.scrollTop;
+      if (sPos === pos) return;
+
+      side.body.$area.scrollTop = pos;
+
+      // setTimeout(() => {
+      if (sPos < pos) {
+        // down
+        if (pos >= cHeight * (this.body.endTrIdx - rCount * trg)) {
+          changed = this.body.downVirtualScroll();
+          side.body.downVirtualScroll();
+        }
+      } else {
+        // up
+        if (pos <= cHeight * (this.body.startTrIdx + rCount * trg)) {
+          changed = this.body.upVirtualScroll();
+          side.body.upVirtualScroll();
+        }
+      }
+      sPos = pos;
+      if (changed) changePosition();
+      // }, 0);
+
       timeout = setTimeout(() => {
-        side.body.container.addEventListener('scroll', side.scrollListener);
+        side.body.$area.addEventListener('scroll', side.scrollListener);
       }, 100);
     };
 
-    this.body.container.addEventListener('scroll', this.scrollListener);
+    this.removeScrollEventHandler();
+    this.body.$area.addEventListener('scroll', this.scrollListener);
   }
 
   removeScrollEventHandler() {
-    this.body.container.removeEventListener('scroll', this.scrollListener);
+    this.body.$area.removeEventListener('scroll', this.scrollListener);
   }
 
   resizeMouseDown(target, startPointX) {

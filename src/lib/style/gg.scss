@@ -136,6 +136,7 @@
   }
 
   .gg-body-area {
+    overflow: scroll;
     .gg-body-total-height-bar {
       position: relative;
       top: 0px;
@@ -144,9 +145,12 @@
     }
     .gg-body-table-container {
       position: relative;
-      overflow: scroll;
     }
     table {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateY(0);
       tbody {
         outline: none;
         tr {
@@ -154,6 +158,9 @@
             background-color: #f0ffff;
           }
           td {
+            height: 30px;
+            overflow: hidden;
+            box-sizing: border-box;
             padding-top: 2px;
             border-style: solid;
             border-color: #eee;

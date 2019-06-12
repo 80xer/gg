@@ -38,6 +38,9 @@ class GG {
     if (props && props.pagination)
       props.pagination = { ...defaultProps.pagination, ...props.pagination };
 
+    if (props.pagination && props.virtualScrolling) {
+      throw new Error('not set pagination with virtualScrolling');
+    }
     this.props = { ...defaultProps, ...props };
   }
 
@@ -152,8 +155,8 @@ class GG {
   }
 
   sortEventHandler() {
-    this.lSide.sortEventHandler(this.lSide, this.rSide, this.initPageNation());
-    this.rSide.sortEventHandler(this.lSide, this.rSide, this.initPageNation());
+    this.lSide.sortEventHandler(this.lSide, this.rSide, this.initSortStatus());
+    this.rSide.sortEventHandler(this.lSide, this.rSide, this.initSortStatus());
   }
 
   scrollEventHandler() {
@@ -199,9 +202,14 @@ class GG {
     };
   }
 
-  initPageNation() {
+  initSortStatus() {
     return () => {
       if (this.pagination) this.pagination.initPageButtons();
+      if (this.props.virtualScrolling) {
+        this.lSide.body.initVirtualScroll();
+        this.rSide.body.initVirtualScroll();
+        this.scrollEventHandler();
+      }
     };
   }
 

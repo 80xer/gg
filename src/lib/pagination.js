@@ -115,6 +115,7 @@ class Pagination {
 
   setEventHandler() {
     this.$area.addEventListener('click', e => {
+      e.preventDefault();
       const target = this.detectPageButtonOnClick(e.target);
       if (target) {
         if (target.dataset.pageIndex) {
