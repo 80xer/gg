@@ -121,21 +121,33 @@ class Body {
 
   changeDataTrs(data, columns, startIdx, endIdx) {
     const trs = this.tbody.querySelectorAll('tr');
+    let remainderStartIdx = 0;
     data.slice(startIdx, endIdx + 1).forEach((row, num) => {
-      const tds = trs[num].querySelectorAll('td');
-      columns.forEach((column, cnum) => {
-        const div = tds[cnum].querySelector('div');
-        let value = startIdx + num + 1;
-        if (column.field !== 'gg-index') {
-          value = this.getValue({
-            data: row,
-            field: column.field,
-            template: column.cellTemplate,
-          });
-        }
-        div.textContent = value;
-      });
+      if (trs[num]) {
+        const tds = trs[num].querySelectorAll('td');
+        columns.forEach((column, cnum) => {
+          const div = tds[cnum].querySelector('div');
+          let value = startIdx + num + 1;
+          if (column.field !== 'gg-index') {
+            value = this.getValue({
+              data: row,
+              field: column.field,
+              template: column.cellTemplate,
+            });
+          }
+          div.innerHTML = value || '';
+        });
+      }
     });
+    if (trs.length < endIdx + 1 - startIdx) {
+      const result = this.createTrs(
+        data,
+        columns,
+        startIdx + trs.length,
+        endIdx
+      );
+      this.tbody.insertAdjacentHTML('beforeend', result);
+    }
   }
 
   upVirtualScroll() {
