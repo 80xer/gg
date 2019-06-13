@@ -1874,6 +1874,11 @@ axobject-query@^2.0.2:
   dependencies:
     ast-types-flow "0.0.7"
 
+axui-datagrid@^0.14.8:
+  version "0.14.8"
+  resolved "https://registry.yarnpkg.com/axui-datagrid/-/axui-datagrid-0.14.8.tgz#ef266e570934315242de53cd826b90cc485e024a"
+  integrity sha512-BCVFgz2OajSLjPFuEfpi/LIFT535tRCdQwrGHXMFaAQCb9b0MNEgsdQPEdW7D0nJFWi1rZcXiemPYMKIVlu36g==
+
 babel-code-frame@^6.22.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-code-frame/-/babel-code-frame-6.26.0.tgz#63fd43f7dc1e3bb7ce35947db8fe369a3f58c74b"

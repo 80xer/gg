@@ -164,6 +164,7 @@
     ]
   },
   "dependencies": {
+    "axui-datagrid": "^0.14.8",
     "node-sass": "^4.12.0"
   }
 }
