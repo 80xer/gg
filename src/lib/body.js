@@ -22,6 +22,7 @@ class Body {
     this.cellHeight = parseInt(this.fontSize, 10) + 16;
     this.bodyAreaHeight = this.props.data.length * this.cellHeight;
     this.createBodyArea();
+    this.scrollCnt = 0;
   }
 
   createBodyArea() {
@@ -132,6 +133,7 @@ class Body {
             value = this.getValue({
               data: row,
               field: column.field,
+              valueFunc: column.value,
               template: column.cellTemplate,
             });
           }
@@ -150,10 +152,13 @@ class Body {
     }
   }
 
-  upVirtualScroll() {
+  upVirtualScroll(scrollTop) {
     const { data, columns } = this.props;
     const trg = this.virtualScrollTrg;
-    let startIdx = this.startTrIdx - this.rowCountPerPage * trg;
+    let startIdx = parseInt(scrollTop / this.cellHeight, 10) - 1;
+    if (startIdx >= this.rowCountPerPage) {
+      startIdx -= this.rowCountPerPage;
+    }
 
     if (this.startTrIdx <= 0) return false;
 
@@ -170,10 +175,13 @@ class Body {
     return true;
   }
 
-  downVirtualScroll() {
+  downVirtualScroll(scrollTop) {
     const { data, columns } = this.props;
     const trg = this.virtualScrollTrg;
-    const startIdx = this.startTrIdx + this.rowCountPerPage * trg;
+    let startIdx = parseInt(scrollTop / this.cellHeight, 10) - 1;
+    if (startIdx >= this.rowCountPerPage) {
+      startIdx -= this.rowCountPerPage;
+    }
     let endIdx = startIdx + this.rowCountPerPage * this.virtualPageCount;
 
     if (this.endTrIdx >= data.length) return false;
@@ -184,6 +192,7 @@ class Body {
 
     // const result = this.createTrs(data, columns, startIdx, endIdx);
     // this.setTbody(result);
+    console.log('startIdx, endIdx :', startIdx, endIdx);
     const result = this.changeDataTrs(data, columns, startIdx, endIdx);
     this.startTrIdx = startIdx;
     this.endTrIdx = endIdx;
@@ -210,18 +219,21 @@ class Body {
     return colgroup;
   }
 
-  getValue({ data, field, template }) {
-    const value = data[field];
+  getValue({ data, field, valueFunc, template }) {
+    let value = data[field];
+    if (valueFunc) {
+      value = valueFunc(value);
+    }
     if (template) {
       return template(value);
     }
     return value;
   }
 
-  getCell({ value, data, field, template }) {
+  getCell({ value, data, field, valueFunc, template }) {
     let div = '';
     if (!value) {
-      value = this.getValue({ data, field, template });
+      value = this.getValue({ data, field, valueFunc, template });
     }
     if (value === 0) {
       div = `<div>${value}</div>`;
@@ -254,11 +266,16 @@ class Body {
 
       if (column.field === 'gg-index') {
         value = i + 1;
-        cell = this.getCell({ value, template: column.cellTemplate });
+        cell = this.getCell({
+          value,
+          valueFunc: column.value,
+          template: column.cellTemplate,
+        });
       } else {
         cell = this.getCell({
           data: row,
           field: column.field,
+          valueFunc: column.value,
           template: column.cellTemplate,
         });
       }

@@ -198,7 +198,7 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       },
       pagination: false,
       virtualScrolling: true,
-      // virtualPageCount: 3,
+      virtualPageCount: 3,
       // pagination: {
       //   perPage: 20,
       //   pageIdx: 1,

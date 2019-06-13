@@ -106,7 +106,7 @@ class Side {
   scrollEventHandler(side) {
     let timeout;
     const cntHeight = parseInt(this.body.container.style.height, 10);
-    let sPos = 0;
+    let bScrollTop = 0;
     const cHeight = this.cellHeight;
     const rCount = this.body.rowCountPerPage;
     const trg = parseInt(this.body.virtualPageCount / 2, 10);
@@ -126,36 +126,40 @@ class Side {
         side.body.table.style.transform = 'translateY(' + scrollPos + 'px)';
       }
     };
-
+    let cnt = 0;
     this.scrollListener = e => {
       clearTimeout(timeout);
       side.removeScrollEventHandler();
       let changed = false;
       const { target: source } = e;
       const headArea = this.head.$area;
-      const pos = source.scrollTop;
+      const scrollTop = source.scrollTop;
 
       headArea.scrollTo(source.scrollLeft, 0);
 
-      if (sPos === pos) return;
-
-      side.body.$area.scrollTop = pos;
-
+      if (bScrollTop === scrollTop) return;
+      cnt += 1;
+      side.body.$area.scrollTop = scrollTop;
       // setTimeout(() => {
-      if (sPos < pos) {
+      if (bScrollTop < scrollTop) {
         // down
-        if (pos >= cHeight * (this.body.endTrIdx - rCount * trg)) {
-          changed = this.body.downVirtualScroll();
-          side.body.downVirtualScroll();
+        if (scrollTop >= cHeight * (this.body.endTrIdx - rCount * trg)) {
+          if (this.props.side === 'right')
+            console.log('e.target.scrollTop :', cnt, e.target.scrollTop);
+          changed = this.body.downVirtualScroll(scrollTop);
+          side.body.downVirtualScroll(scrollTop);
+        } else {
+          if (this.props.side === 'right')
+            console.log('NOPE:', cnt, e.target.scrollTop);
         }
       } else {
         // up
-        if (pos <= cHeight * (this.body.startTrIdx + rCount * trg)) {
-          changed = this.body.upVirtualScroll();
-          side.body.upVirtualScroll();
+        if (scrollTop <= cHeight * (this.body.startTrIdx + rCount * trg)) {
+          changed = this.body.upVirtualScroll(scrollTop);
+          side.body.upVirtualScroll(scrollTop);
         }
       }
-      sPos = pos;
+      bScrollTop = scrollTop;
       if (changed) changePosition();
       // }, 0);
 
