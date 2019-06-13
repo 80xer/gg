@@ -119,8 +119,23 @@ class Body {
     return result.join('');
   }
 
-  removeTrs() {
-    // remove trs
+  changeDataTrs(data, columns, startIdx, endIdx) {
+    const trs = this.tbody.querySelectorAll('tr');
+    data.slice(startIdx, endIdx + 1).forEach((row, num) => {
+      const tds = trs[num].querySelectorAll('td');
+      columns.forEach((column, cnum) => {
+        const div = tds[cnum].querySelector('div');
+        let value = startIdx + num + 1;
+        if (column.field !== 'gg-index') {
+          value = this.getValue({
+            data: row,
+            field: column.field,
+            template: column.cellTemplate,
+          });
+        }
+        div.textContent = value;
+      });
+    });
   }
 
   upVirtualScroll() {
@@ -135,8 +150,9 @@ class Body {
     }
 
     const endIdx = startIdx + this.rowCountPerPage * this.virtualPageCount;
-    const result = this.createTrs(data, columns, startIdx, endIdx);
-    this.setTbody(result);
+    // const result = this.createTrs(data, columns, startIdx, endIdx);
+    // this.setTbody(result);
+    const result = this.changeDataTrs(data, columns, startIdx, endIdx);
     this.startTrIdx = startIdx;
     this.endTrIdx = endIdx;
     return true;
@@ -154,8 +170,9 @@ class Body {
       endIdx = data.length;
     }
 
-    const result = this.createTrs(data, columns, startIdx, endIdx);
-    this.setTbody(result);
+    // const result = this.createTrs(data, columns, startIdx, endIdx);
+    // this.setTbody(result);
+    const result = this.changeDataTrs(data, columns, startIdx, endIdx);
     this.startTrIdx = startIdx;
     this.endTrIdx = endIdx;
     return true;
@@ -181,19 +198,18 @@ class Body {
     return colgroup;
   }
 
-  getValue(data, fields, template) {
-    const value = data[fields];
+  getValue({ data, field, template }) {
+    const value = data[field];
     if (template) {
       return template(value);
     }
     return value;
   }
 
-  getCell(value, template) {
+  getCell({ value, data, field, template }) {
     let div = '';
-    if (template) {
-      div = `<div>${template(value)}</div>`;
-      return div;
+    if (!value) {
+      value = this.getValue({ data, field, template });
     }
     if (value === 0) {
       div = `<div>${value}</div>`;
@@ -226,10 +242,13 @@ class Body {
 
       if (column.field === 'gg-index') {
         value = i + 1;
-        cell = this.getCell(value, column.cellTemplate);
+        cell = this.getCell({ value, template: column.cellTemplate });
       } else {
-        value = this.getValue(row, column.field, column.value);
-        cell = this.getCell(value, column.cellTemplate);
+        cell = this.getCell({
+          data: row,
+          field: column.field,
+          template: column.cellTemplate,
+        });
       }
       td = `<td style="${style}" ${dataSetColumnName}>${cell}</td>`;
       // td.appendChild(cell);
