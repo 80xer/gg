@@ -12,7 +12,7 @@ describe('Body', () => {
       ...sampleProps,
       ...defaultProps,
     });
-    const cellDiv = body.getCell();
-    expect(cellDiv).toEqual('<div></div>');
+    const cellDiv = body.getCell({ value: 1 });
+    expect(cellDiv).toEqual('<div>1</div>');
   });
 });

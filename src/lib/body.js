@@ -167,8 +167,6 @@ class Body {
     }
 
     const endIdx = startIdx + this.rowCountPerPage * this.virtualPageCount;
-    // const result = this.createTrs(data, columns, startIdx, endIdx);
-    // this.setTbody(result);
     const result = this.changeDataTrs(data, columns, startIdx, endIdx);
     this.startTrIdx = startIdx;
     this.endTrIdx = endIdx;
@@ -190,9 +188,6 @@ class Body {
       endIdx = data.length;
     }
 
-    // const result = this.createTrs(data, columns, startIdx, endIdx);
-    // this.setTbody(result);
-    console.log('startIdx, endIdx :', startIdx, endIdx);
     const result = this.changeDataTrs(data, columns, startIdx, endIdx);
     this.startTrIdx = startIdx;
     this.endTrIdx = endIdx;

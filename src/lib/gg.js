@@ -38,7 +38,7 @@ class GG {
     if (props && props.pagination)
       props.pagination = { ...defaultProps.pagination, ...props.pagination };
 
-    if (props.pagination && props.virtualScrolling) {
+    if (props && props.pagination && props.virtualScrolling) {
       throw new Error('not set pagination with virtualScrolling');
     }
     this.props = { ...defaultProps, ...props };
