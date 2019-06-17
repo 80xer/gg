@@ -126,7 +126,7 @@ class Side {
         side.body.table.style.transform = 'translateY(' + scrollPos + 'px)';
       }
     };
-    let cnt = 0;
+
     this.scrollListener = e => {
       clearTimeout(timeout);
       side.removeScrollEventHandler();
@@ -138,19 +138,13 @@ class Side {
       headArea.scrollTo(source.scrollLeft, 0);
 
       if (bScrollTop === scrollTop) return;
-      cnt += 1;
       side.body.$area.scrollTop = scrollTop;
-      // setTimeout(() => {
+
       if (bScrollTop < scrollTop) {
         // down
         if (scrollTop >= cHeight * (this.body.endTrIdx - rCount * trg)) {
-          if (this.props.side === 'right')
-            console.log('e.target.scrollTop :', cnt, e.target.scrollTop);
           changed = this.body.downVirtualScroll(scrollTop);
           side.body.downVirtualScroll(scrollTop);
-        } else {
-          if (this.props.side === 'right')
-            console.log('NOPE:', cnt, e.target.scrollTop);
         }
       } else {
         // up
@@ -161,7 +155,6 @@ class Side {
       }
       bScrollTop = scrollTop;
       if (changed) changePosition();
-      // }, 0);
 
       timeout = setTimeout(() => {
         side.body.$area.addEventListener('scroll', side.scrollListener);
