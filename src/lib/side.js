@@ -49,6 +49,12 @@ class Side {
     return this.head;
   }
 
+  createGuideLine() {
+    this.guideLine = document.createElement('div');
+    addClass(this.guideLine, 'gg-guide-line');
+    return this.guideLine;
+  }
+
   createBody() {
     this.body = new Body({
       ...this.props,
@@ -68,6 +74,7 @@ class Side {
     this.$side = side;
     this.$side.appendChild(this.createHead().$area);
     this.$side.appendChild(this.createBody().$area);
+    this.$side.appendChild(this.createGuideLine());
   }
 
   sortEventHandler(lSide, rSide, callback) {
@@ -187,6 +194,7 @@ class Side {
         10
       );
       head.startPointX = startPointX;
+      addClass(this.guideLine, 'active');
     }
   }
 
@@ -198,6 +206,17 @@ class Side {
     head.vectorPointX = 0;
     head.resizeTarget = null;
     this.setWidth(parseInt(this.$side.style.width, 10));
+  }
+
+  moveGuideLine(pointX, rSide) {
+    const { head, $side, width } = this;
+    if (head.resizableColumnWidth) {
+      head.vectorPointX = pointX - head.startPointX;
+      const { vectorPointX, resizeColIdx, headCols, bodyCols } = head;
+      // 가이드 위치
+      this.guideLine.style.left = `${head.vectorPointX +
+        head.startColLeft[resizeColIdx]}px`;
+    }
   }
 
   resizeColumns(pointX, rSide) {
@@ -221,6 +240,7 @@ class Side {
       headCols[resizeColIdx].setAttribute('width', newWidth);
       // 본문 컬럼
       bodyCols[resizeColIdx].setAttribute('width', newWidth);
+      removeClass(this.guideLine, 'active');
     }
   }
 

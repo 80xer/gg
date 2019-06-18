@@ -5,12 +5,34 @@
   font-family: '\B3CB\C6C0', Dotum, Helvetica, 'Apple SD Gothic Neo', Sans-serif;
   overflow: visible;
 
+  .disable-selection * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
   .gg-container {
     position: relative;
     height: 100%;
     // box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.05),
     //   0px 20px 20px rgba(0, 0, 0, 0.05), 0px 30px 20px rgba(0, 0, 0, 0.05);
-
+    .gg-side {
+      position: relative;
+      .gg-guide-line {
+        position: absolute;
+        width: 0px;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border: none;
+        &.active {
+          border-left: 1px dashed #b3b3b3;
+        }
+      }
+    }
     .gg-lside {
       position: absolute;
       overflow: hidden;

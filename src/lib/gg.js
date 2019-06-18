@@ -3,7 +3,7 @@ import BorderLine from './border-line';
 import { props as validateProps } from './validate';
 import Side from './side';
 import Pagination from './pagination';
-import { addClass, hasClass } from './utils';
+import { addClass, removeClass, hasClass } from './utils';
 import defaultProps, { defaultColumnProps } from './defaultProps';
 import './style/gg.scss';
 
@@ -127,30 +127,38 @@ class GG {
   }
 
   resizeColumnEventHandler() {
-    // this.lSide.resizeColumnEventHandler();
-    // this.rSide.resizeColumnEventHandler();
     const { target } = this.props;
     target.addEventListener('mousedown', e => {
       if (hasClass(e.target, 'gg-resizer')) {
         this.resizingSide = this.detectSideOnClickResizer(e.target);
         if (this.resizingSide) {
+          addClass(this.$container, 'disable-selection');
           this[this.resizingSide].resizeMouseDown(e.target, e.clientX);
         }
       }
     });
     target.addEventListener('mouseup', e => {
-      if (this.resizingSide) {
-        this[this.resizingSide].resizeClear(e.target);
-        this.resizingSide = false;
-      }
-    });
-
-    target.addEventListener('mousemove', e => {
       if (this.resizingSide === 'lSide') {
         this[this.resizingSide].resizeColumns(e.clientX, this.rSide);
       } else if (this.resizingSide === 'rSide') {
         this[this.resizingSide].resizeColumns(e.clientX);
       }
+      if (this.resizingSide) {
+        this[this.resizingSide].resizeClear(e.target);
+        this.resizingSide = false;
+        removeClass(this.$container, 'disable-selection');
+      }
+    });
+
+    target.addEventListener('mousemove', e => {
+      if (this.resizingSide) {
+        this[this.resizingSide].moveGuideLine(e.clientX);
+      }
+      // if (this.resizingSide === 'lSide') {
+      //   this[this.resizingSide].resizeColumns(e.clientX, this.rSide);
+      // } else if (this.resizingSide === 'rSide') {
+      //   this[this.resizingSide].resizeColumns(e.clientX);
+      // }
     });
   }
 
