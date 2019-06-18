@@ -194,6 +194,9 @@ class Side {
         10
       );
       head.startPointX = startPointX;
+      this.guideLine.style.transform = `translateX(${head.startColLeft[
+        head.resizeColIdx
+      ] + 3}px)`;
       addClass(this.guideLine, 'active');
     }
   }
@@ -203,27 +206,27 @@ class Side {
     head.resizableColumnWidth = false;
     head.startColWidth = 0;
     head.startColLeft = [];
-    head.vectorPointX = 0;
     head.resizeTarget = null;
     this.setWidth(parseInt(this.$side.style.width, 10));
   }
 
   moveGuideLine(pointX, rSide) {
-    const { head, $side, width } = this;
+    const { head } = this;
     if (head.resizableColumnWidth) {
-      head.vectorPointX = pointX - head.startPointX;
-      const { vectorPointX, resizeColIdx, headCols, bodyCols } = head;
+      const vectorPointX = pointX - head.startPointX;
+      const { resizeColIdx } = head;
       // 가이드 위치
-      this.guideLine.style.left = `${head.vectorPointX +
-        head.startColLeft[resizeColIdx]}px`;
+      this.guideLine.style.transform = `translateX(${vectorPointX +
+        head.startColLeft[resizeColIdx] +
+        3}px)`;
     }
   }
 
   resizeColumns(pointX, rSide) {
     const { head, $side, width } = this;
     if (head.resizableColumnWidth) {
-      head.vectorPointX = pointX - head.startPointX;
-      const { vectorPointX, resizeColIdx, headCols, bodyCols } = head;
+      const vectorPointX = pointX - head.startPointX;
+      const { resizeColIdx, headCols, bodyCols } = head;
       // 리사이저 위치
       head.resizers.forEach((rs, i) => {
         if (i >= resizeColIdx) {

@@ -2,8 +2,10 @@
 /* eslint-disable func-names */
 /* eslint-disable camelcase */
 export function addClass(el, className) {
-  el.classList.add(className);
-  return el;
+  className.split(' ').forEach(cn => {
+    el.classList.add(cn);
+    return el;
+  });
 }
 
 export function hasClass(el, className) {
@@ -12,7 +14,9 @@ export function hasClass(el, className) {
 }
 
 export function removeClass(el, className) {
-  el.classList.remove(className);
+  className.split(' ').forEach(cn => {
+    el.classList.remove(cn);
+  });
 }
 
 export function getValue(obj, fields) {

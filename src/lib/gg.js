@@ -132,7 +132,7 @@ class GG {
       if (hasClass(e.target, 'gg-resizer')) {
         this.resizingSide = this.detectSideOnClickResizer(e.target);
         if (this.resizingSide) {
-          addClass(this.$container, 'disable-selection');
+          addClass(this.$container, 'disable-selection col-resizing');
           this[this.resizingSide].resizeMouseDown(e.target, e.clientX);
         }
       }
@@ -146,7 +146,7 @@ class GG {
       if (this.resizingSide) {
         this[this.resizingSide].resizeClear(e.target);
         this.resizingSide = false;
-        removeClass(this.$container, 'disable-selection');
+        removeClass(this.$container, 'disable-selection col-resizing');
       }
     });
 
