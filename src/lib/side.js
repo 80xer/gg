@@ -194,10 +194,7 @@ class Side {
         10
       );
       head.startPointX = startPointX;
-      this.guideLine.style.transform = `translateX(${head.startColLeft[
-        head.resizeColIdx
-      ] + 3}px)`;
-      addClass(this.guideLine, 'active');
+      return head.startColLeft[head.resizeColIdx] + 3;
     }
   }
 
@@ -216,35 +213,62 @@ class Side {
       const vectorPointX = pointX - head.startPointX;
       const { resizeColIdx } = head;
       // 가이드 위치
-      this.guideLine.style.transform = `translateX(${vectorPointX +
-        head.startColLeft[resizeColIdx] +
-        3}px)`;
+      return vectorPointX + head.startColLeft[resizeColIdx] + 3;
     }
   }
 
   resizeColumns(pointX, rSide) {
-    const { head, $side, width } = this;
+    const { head } = this;
     if (head.resizableColumnWidth) {
       const vectorPointX = pointX - head.startPointX;
-      const { resizeColIdx, headCols, bodyCols } = head;
+      const { resizeColIdx } = head;
       // 리사이저 위치
-      head.resizers.forEach((rs, i) => {
-        if (i >= resizeColIdx) {
-          rs.style.left = `${head.startColLeft[i] + vectorPointX}px`;
-        }
-      });
-      if (rSide) {
-        // console.log('left side resize');
-        $side.style.width = `${width + vectorPointX}px`;
-        rSide.setMarginLeft(parseInt($side.style.width, 10));
-      }
-      // 헤더 컬럼
-      const newWidth = head.startColWidth + vectorPointX;
-      headCols[resizeColIdx].setAttribute('width', newWidth);
-      // 본문 컬럼
-      bodyCols[resizeColIdx].setAttribute('width', newWidth);
-      removeClass(this.guideLine, 'active');
+      this.resizeColumnsWithVectorPointX(vectorPointX, resizeColIdx, rSide);
     }
+  }
+
+  resizeColumnsWithVectorPointX(vectorPointX, resizeColIdx, rSide) {
+    const { head, $side, width } = this;
+    const { headCols, bodyCols } = head;
+    const newWidth = head.startColWidth + vectorPointX;
+    if (newWidth <= 0) return;
+    head.resizers.forEach((rs, i) => {
+      if (i >= resizeColIdx) {
+        rs.style.left = `${head.startColLeft[i] + vectorPointX}px`;
+      }
+    });
+    if (rSide) {
+      $side.style.width = `${width + vectorPointX}px`;
+      rSide.setMarginLeft(parseInt($side.style.width, 10));
+    }
+    // 헤더 컬럼
+    headCols[resizeColIdx].setAttribute('width', newWidth);
+    // 본문 컬럼
+    bodyCols[resizeColIdx].setAttribute('width', newWidth);
+  }
+
+  autoFitWidth(target, rSide) {
+    const { head, body } = this;
+    const colIndex = target.dataset.colIndex;
+    const trs = body.table.querySelectorAll('tr');
+    const scrollWidths = [...trs].map(tr => {
+      return tr.querySelectorAll('td')[colIndex].querySelector('div')
+        .scrollWidth;
+    });
+    const maxWidth = Math.max.apply(null, scrollWidths);
+    head.headCols = head.colgroup.$el.querySelectorAll('col');
+    head.bodyCols = body.colgroup.$el.querySelectorAll('col');
+    const width = head.bodyCols[colIndex].getAttribute('width');
+    head.startColWidth = parseInt(
+      head.headCols[colIndex].getAttribute('width'),
+      10
+    );
+    head.startColLeft = [].map.call(
+      head.resizerContainer.querySelectorAll('.gg-resizer'),
+      rs => parseInt(rs.style.left, 10)
+    );
+    this.resizeColumnsWithVectorPointX(maxWidth - width + 10, colIndex, rSide);
+    this.resizeClear();
   }
 
   // 부모 노드에서 tr찾아 반환.

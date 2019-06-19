@@ -16,13 +16,14 @@ class GG {
     const { lSideColumns, rSideColumns } = this.splitColumns();
     this.lSideColumns = lSideColumns;
     this.rSideColumns = rSideColumns;
+    this.createContainer();
     this.createLside();
-    this.createBorderLine();
-    this.drawLside();
     this.createRside();
-    this.drawRside();
+    this.createBorderLine();
     this.setEventHandler();
     this.createPagination();
+    this.createGuideLine();
+    this.drawContainer();
   }
 
   init(props) {
@@ -57,6 +58,7 @@ class GG {
     // this.rSide.$side.style.marginLeft = this.lSide.$side.style.width;
     this.rSide.setMarginLeft(parseInt(this.lSide.$side.style.width, 10));
     addClass(this.rSide.$side, 'gg-rside');
+    this.$container.appendChild(this.rSide.$side);
   }
 
   createLside() {
@@ -78,6 +80,7 @@ class GG {
     // this.lSide.$side.style.width = `${lSideWidth}px`;
     this.lSide.setWidth(lSideWidth);
     addClass(this.lSide.$side, 'gg-lside');
+    this.$container.appendChild(this.lSide.$side);
   }
 
   splitColumns() {
@@ -101,12 +104,16 @@ class GG {
     this.rightLine = new BorderLine({ type: 'right' });
     this.bottomLine = new BorderLine({ type: 'bottom' });
     this.leftLine = new BorderLine({ type: 'left' });
+    this.$container.appendChild(this.topLine.$line);
+    this.$container.appendChild(this.rightLine.$line);
+    this.$container.appendChild(this.bottomLine.$line);
+    this.$container.appendChild(this.leftLine.$line);
   }
 
   createContainer() {
     const container = document.createElement('div');
     addClass(container, 'gg-container');
-    return container;
+    this.$container = container;
   }
 
   detectSideOnClickResizer(target) {
@@ -128,37 +135,67 @@ class GG {
 
   resizeColumnEventHandler() {
     const { target } = this.props;
+    target.addEventListener('dblclick', e => {
+      if (hasClass(e.target, 'gg-resizer')) {
+        const resizingSide = this.detectSideOnClickResizer(e.target);
+        console.log(
+          'resizingSide, this.resizingSide :',
+          resizingSide,
+          this.resizingSide
+        );
+        if (this.resizingSide === 'lSide') {
+          this[resizingSide].autoFitWidth(e.target, this.rSide);
+        } else {
+          this[resizingSide].autoFitWidth(e.target);
+        }
+        this.resizingSide = false;
+        removeClass(this.$container, 'disable-selection col-resizing');
+        removeClass(this.guideLine, 'active');
+      }
+    });
     target.addEventListener('mousedown', e => {
       if (hasClass(e.target, 'gg-resizer')) {
         this.resizingSide = this.detectSideOnClickResizer(e.target);
         if (this.resizingSide) {
+          if (this.resizingSide === 'rSide') {
+            this.rSideMarginLeft = parseInt(
+              this.rSide.$side.style.marginLeft,
+              10
+            );
+          } else {
+            this.rSideMarginLeft = 0;
+          }
           addClass(this.$container, 'disable-selection col-resizing');
-          this[this.resizingSide].resizeMouseDown(e.target, e.clientX);
+          let guideLeft =
+            this[this.resizingSide].resizeMouseDown(e.target, e.clientX) +
+            this.rSideMarginLeft;
+
+          this.guideLine.style.transform = `translateX(${guideLeft}px)`;
         }
       }
     });
     target.addEventListener('mouseup', e => {
-      if (this.resizingSide === 'lSide') {
-        this[this.resizingSide].resizeColumns(e.clientX, this.rSide);
-      } else if (this.resizingSide === 'rSide') {
-        this[this.resizingSide].resizeColumns(e.clientX);
-      }
       if (this.resizingSide) {
+        if (this.resizingSide === 'lSide') {
+          this[this.resizingSide].resizeColumns(e.clientX, this.rSide);
+        } else if (this.resizingSide === 'rSide') {
+          this[this.resizingSide].resizeColumns(e.clientX);
+        }
         this[this.resizingSide].resizeClear(e.target);
         this.resizingSide = false;
         removeClass(this.$container, 'disable-selection col-resizing');
+        removeClass(this.guideLine, 'active');
       }
     });
 
     target.addEventListener('mousemove', e => {
       if (this.resizingSide) {
-        this[this.resizingSide].moveGuideLine(e.clientX);
+        const guideLeft =
+          this[this.resizingSide].moveGuideLine(e.clientX) +
+          this.rSideMarginLeft;
+        this.guideLine.style.transform = `translateX(${guideLeft}px)`;
+        addClass(this.guideLine, 'active');
       }
-      // if (this.resizingSide === 'lSide') {
-      //   this[this.resizingSide].resizeColumns(e.clientX, this.rSide);
-      // } else if (this.resizingSide === 'rSide') {
-      //   this[this.resizingSide].resizeColumns(e.clientX);
-      // }
     });
   }
 
@@ -184,22 +221,8 @@ class GG {
     this.hoverEventHandler();
   }
 
-  drawRside() {
-    const { rSide, topLine, rightLine, bottomLine, leftLine } = this;
-
-    this.$container.appendChild(rSide.$side);
-    this.$container.appendChild(topLine.$line);
-    this.$container.appendChild(rightLine.$line);
-    this.$container.appendChild(bottomLine.$line);
-    this.$container.appendChild(leftLine.$line);
-  }
-
-  drawLside() {
+  drawContainer() {
     const { target } = this.props;
-    const { lSide } = this;
-
-    this.$container = this.createContainer();
-    this.$container.appendChild(lSide.$side);
     target.appendChild(this.$container);
   }
 
@@ -231,6 +254,12 @@ class GG {
       callback: this.paginationCallBack(),
     });
     target.appendChild(this.pagination.$area);
+  }
+
+  createGuideLine() {
+    this.guideLine = document.createElement('div');
+    addClass(this.guideLine, 'gg-guide-line');
+    this.$container.appendChild(this.guideLine);
   }
 }
 
