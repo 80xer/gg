@@ -138,11 +138,6 @@ class GG {
     target.addEventListener('dblclick', e => {
       if (hasClass(e.target, 'gg-resizer')) {
         const resizingSide = this.detectSideOnClickResizer(e.target);
-        console.log(
-          'resizingSide, this.resizingSide :',
-          resizingSide,
-          this.resizingSide
-        );
         if (this.resizingSide === 'lSide') {
           this[resizingSide].autoFitWidth(e.target, this.rSide);
         } else {
@@ -196,6 +191,11 @@ class GG {
         this.guideLine.style.transform = `translateX(${guideLeft}px)`;
         addClass(this.guideLine, 'active');
       }
+    });
+
+    target.addEventListener('contextmenu', e => {
+      console.log('right click');
+      e.preventDefault();
     });
   }
 
