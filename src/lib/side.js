@@ -330,6 +330,32 @@ class Side {
   unsetSelectionLayer() {
     this.body.hideSelectionLayer();
   }
+
+  startSelectFromOtherSide(elm) {
+    const cols = this.head.colgroup.$el.querySelectorAll('col');
+    if (this.props.side === 'left') {
+      const row = elm.parentNode.dataset.rowIndex;
+      const col = cols.length - 1;
+      this.body.startSelectByRowColumn({ row, col });
+    } else {
+      const row = elm.parentNode.dataset.rowIndex;
+      const col = 0;
+      this.body.startSelectByRowColumn({ row, col });
+    }
+  }
+
+  selectCellInOtherSide(elm) {
+    const cols = this.head.colgroup.$el.querySelectorAll('col');
+    if (this.props.side === 'left') {
+      const row = elm.parentNode.dataset.rowIndex;
+      const col = cols.length - 1;
+      this.body.selectCellByRowColumn({ row, col });
+    } else {
+      const row = elm.parentNode.dataset.rowIndex;
+      const col = 0;
+      this.body.selectCellByRowColumn({ row, col });
+    }
+  }
 }
 
 export default Side;

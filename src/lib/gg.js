@@ -139,6 +139,11 @@ class GG {
     return false;
   }
 
+  otherSide(side) {
+    if (side === 'lSide') return 'rSide';
+    if (side === 'rSide') return 'lSide';
+  }
+
   autoFitColumnWidth(target) {
     if (hasClass(target, 'gg-resizer')) {
       const resizingSide = this.getSideOfTarget(target);
@@ -202,6 +207,8 @@ class GG {
   focusCell({ target, clientX, clientY }) {
     const elm = hasClassInParents(target, 'gg-cell');
     if (elm) {
+      this.unsetFocusLayer();
+      this.unsetSelectionLayer();
       this.cursorPoint = {
         x: clientX,
         y: clientY,
@@ -230,9 +237,18 @@ class GG {
         const elm = hasClassInParents(target, 'gg-cell');
         if (elm) {
           const side = this.getSideOfTarget(elm);
-          if (!this[side].body.selectionStartCell)
-            this[side].body.startSelect(this.focusedCell);
-          this[side].body.selectCell(elm);
+          const focusedSide = this.getSideOfTarget(this.focusedCell);
+          if (side === focusedSide) {
+            if (!this[side].body.selectionStartCell)
+              this[side].body.startSelect(this.focusedCell);
+            this[this.otherSide(side)].body.hideSelectionLayer();
+            this[side].body.selectCell(elm);
+          } else {
+            if (!this[side].body.selectionStartCell)
+              this[side].startSelectFromOtherSide(this.focusedCell);
+            this[side].body.selectCell(elm);
+            this[this.otherSide(side)].selectCellInOtherSide(elm);
+          }
         }
       }
     }
@@ -245,8 +261,6 @@ class GG {
   }
 
   mouseDownWrapper({ target, clientX, clientY }) {
-    this.unsetFocusLayer();
-    this.unsetSelectionLayer();
     this.initResizeColumnWidth({ target, clientX });
     this.focusCell({ target, clientX, clientY });
   }

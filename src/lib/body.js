@@ -320,6 +320,10 @@ class Body {
     };
   }
 
+  getCellElementByIndex({ row, col }) {
+    return this.tbody.querySelectorAll(`[data-row-index="${row}"] td`)[col];
+  }
+
   createSelectionLayer() {
     this.selectionLayer = document.createElement('div');
     addClass(this.selectionLayer, 'gg-selection-layer');
@@ -381,6 +385,11 @@ class Body {
     this.tbody.dispatchEvent(event);
   }
 
+  startSelectByRowColumn({ row, col }) {
+    const elm = this.getCellElementByIndex({ row, col });
+    this.startSelect(elm);
+  }
+
   selectCell(elm) {
     const cols = this.props.head.colgroup.$el.querySelectorAll('col');
     if (this.selectionStartCell && this.selectionEndCell !== elm) {
@@ -389,32 +398,47 @@ class Body {
     }
   }
 
+  selectCellByRowColumn({ row, col }) {
+    const elm = this.getCellElementByIndex({ row, col });
+    this.selectCell(elm);
+  }
+
+  setSelection({ left, width, top, height }) {
+    const { selectionLayer } = this;
+    selectionLayer.style.top = `${top}px`;
+    selectionLayer.style.height = `${height}px`;
+    selectionLayer.style.left = `${left}px`;
+    selectionLayer.style.width = `${width}px`;
+  }
+
   showSelection(cols) {
     const { selectionStartCell, selectionEndCell, selectionLayer } = this;
     const startCellInfo = this.getCellInfo(selectionStartCell, cols);
     const endCellInfo = this.getCellInfo(selectionEndCell, cols);
-    let start, end;
+    let left, top, width, height;
     if (startCellInfo.left <= endCellInfo.left) {
-      start = startCellInfo;
-      end = endCellInfo;
+      left = startCellInfo.left;
+      width = endCellInfo.left - startCellInfo.left + endCellInfo.width;
     } else {
-      start = endCellInfo;
-      end = startCellInfo;
+      left = endCellInfo.left;
+      width = startCellInfo.left - endCellInfo.left + startCellInfo.width;
     }
-
-    selectionLayer.style.left = `${start.left}px`;
-    selectionLayer.style.width = `${end.left - start.left + end.width}px`;
 
     if (startCellInfo.top <= endCellInfo.top) {
-      start = startCellInfo;
-      end = endCellInfo;
+      top = startCellInfo.top;
+      height = endCellInfo.top - startCellInfo.top + endCellInfo.height;
     } else {
-      start = endCellInfo;
-      end = startCellInfo;
+      top = endCellInfo.top;
+      height = startCellInfo.top - endCellInfo.top + startCellInfo.height;
     }
 
-    selectionLayer.style.top = `${start.top}px`;
-    selectionLayer.style.height = `${end.top - start.top + end.height}px`;
+    this.setSelection({
+      left,
+      top,
+      width,
+      height,
+    });
+
     addClass(selectionLayer, 'active');
   }
 
