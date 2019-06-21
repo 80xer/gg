@@ -1,4 +1,4 @@
-import { addClass } from '../utils';
+import { addClass, getDistance } from '../utils';
 
 describe('util', () => {
   it('addClass from classList', () => {
@@ -14,5 +14,10 @@ describe('util', () => {
       }
     });
     expect(addedClass).toBe(true);
+  });
+
+  it('get distance between two points', () => {
+    const dist = getDistance(0, 0, 2, 2);
+    expect(dist).toEqual(Math.sqrt(8));
   });
 });

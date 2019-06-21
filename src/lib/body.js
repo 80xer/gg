@@ -1,6 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import { addClass, getValue, removeClass, hasClass } from './utils';
+import {
+  addClass,
+  getValue,
+  removeClass,
+  hasClass,
+  hasClassInParents,
+} from './utils';
 import ColGroup from './colgroup';
 import sort from './sort';
 
@@ -23,7 +29,8 @@ class Body {
     this.bodyAreaHeight = this.props.data.length * this.cellHeight;
     this.createBodyArea();
     this.createFocusLayer();
-    this.scrollCnt = 0;
+    this.createSelectionLayer();
+    this.setEventHandler();
   }
 
   createBodyArea() {
@@ -37,7 +44,6 @@ class Body {
     const container = this.createTableContainer();
     area.appendChild(container);
     this.$area = area;
-    this.setEventHandler();
     return area;
   }
 
@@ -66,17 +72,6 @@ class Body {
     // table.style.height = `${cellHeight * data.length}px`;
     this.table = table;
     return table;
-  }
-
-  setEventHandler() {
-    const element = this.$area;
-    const outsideClickListener = e => {
-      if (!element.contains(e.target) && hasClass(element, 'active-focus')) {
-        removeClass(element, 'active-focus');
-      }
-    };
-
-    document.addEventListener('click', outsideClickListener);
   }
 
   sortBody(fields, direction) {
@@ -300,6 +295,37 @@ class Body {
     );
   }
 
+  getCellInfo(cell, cols) {
+    const columnName = cell.dataset.columnName;
+    const rowIndex = cell.parentNode.dataset.rowIndex * 1;
+    let colIndex = 0;
+    const left = [...cols].slice(0).reduce((acc, col, i, arr) => {
+      if (col.dataset.columnName === columnName) {
+        arr.splice(1);
+        colIndex = i;
+        return acc;
+      } else {
+        const w = parseInt(col.getAttribute('width'), 10);
+        return acc + w;
+      }
+    }, 0);
+
+    return {
+      left: left,
+      top: rowIndex * cell.offsetHeight,
+      width: cell.offsetWidth,
+      height: cell.offsetHeight,
+      row: rowIndex,
+      col: colIndex,
+    };
+  }
+
+  createSelectionLayer() {
+    this.selectionLayer = document.createElement('div');
+    addClass(this.selectionLayer, 'gg-selection-layer');
+    this.$area.appendChild(this.selectionLayer);
+  }
+
   createFocusLayer() {
     this.focusLayer = document.createElement('div');
     addClass(this.focusLayer, 'gg-focus-layer');
@@ -348,6 +374,81 @@ class Body {
 
   hideFocusLayer() {
     removeClass(this.focusLayer, 'active');
+  }
+
+  startSelect(elm) {
+    const event = new CustomEvent('startSelectEvt', { detail: { elm } });
+    this.tbody.dispatchEvent(event);
+  }
+
+  selectCell(elm) {
+    const cols = this.props.head.colgroup.$el.querySelectorAll('col');
+    if (this.selectionStartCell && this.selectionEndCell !== elm) {
+      const event = new CustomEvent('selectCellEvt', { detail: { elm, cols } });
+      this.tbody.dispatchEvent(event);
+    }
+  }
+
+  showSelection(cols) {
+    const { selectionStartCell, selectionEndCell, selectionLayer } = this;
+    const startCellInfo = this.getCellInfo(selectionStartCell, cols);
+    const endCellInfo = this.getCellInfo(selectionEndCell, cols);
+    let start, end;
+    if (startCellInfo.left <= endCellInfo.left) {
+      start = startCellInfo;
+      end = endCellInfo;
+    } else {
+      start = endCellInfo;
+      end = startCellInfo;
+    }
+
+    selectionLayer.style.left = `${start.left}px`;
+    selectionLayer.style.width = `${end.left - start.left + end.width}px`;
+
+    if (startCellInfo.top <= endCellInfo.top) {
+      start = startCellInfo;
+      end = endCellInfo;
+    } else {
+      start = endCellInfo;
+      end = startCellInfo;
+    }
+
+    selectionLayer.style.top = `${start.top}px`;
+    selectionLayer.style.height = `${end.top - start.top + end.height}px`;
+    addClass(selectionLayer, 'active');
+  }
+
+  hideSelectionLayer() {
+    this.selectionStartCell = null;
+    this.selectionEndCell = null;
+    removeClass(this.selectionLayer, 'active');
+  }
+
+  setEventHandler() {
+    const element = this.$area;
+    const outsideClickListener = e => {
+      if (!element.contains(e.target) && hasClass(element, 'active-focus')) {
+        removeClass(element, 'active-focus');
+      }
+    };
+
+    document.addEventListener('click', outsideClickListener);
+
+    this.tbody.addEventListener('startSelectEvt', e => {
+      this.selectionStartCell = e.detail.elm;
+    });
+
+    this.tbody.addEventListener('selectCellEvt', e => {
+      this.selectionEndCell = e.detail.elm;
+      this.showSelection(e.detail.cols);
+    });
+  }
+
+  setFocusLayer(elm) {
+    const cols = this.props.head.colgroup.$el.querySelectorAll('col');
+    const { left, top, width, height, row, col } = this.getCellInfo(elm, cols);
+    this.showFocusLayer({ left, top, width, height });
+    return { left, top, width, height, row, col };
   }
 }
 

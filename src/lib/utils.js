@@ -34,4 +34,12 @@ export function getValue(obj, fields) {
   return fields.split('.').reduce((_obj, prop) => _obj && _obj[prop], obj);
 }
 
+export function getDistance(x1, y1, x2, y2) {
+  let xv = x2 - x1;
+  let yv = y2 - y1;
+  xv *= xv;
+  yv *= yv;
+  return Math.sqrt(xv + yv);
+}
+
 export const OMDb_API_KEY = '8059120c';

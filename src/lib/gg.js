@@ -3,7 +3,13 @@ import BorderLine from './border-line';
 import { props as validateProps } from './validate';
 import Side from './side';
 import Pagination from './pagination';
-import { addClass, removeClass, hasClass, hasClassInParents } from './utils';
+import {
+  addClass,
+  removeClass,
+  hasClass,
+  hasClassInParents,
+  getDistance,
+} from './utils';
 import defaultProps, { defaultColumnProps } from './defaultProps';
 import './style/gg.scss';
 
@@ -116,7 +122,7 @@ class GG {
     this.$container = container;
   }
 
-  detectSideOnClickResizer(target) {
+  getSideOfTarget(target) {
     let elm = target;
     while (elm) {
       if (hasClass(elm, 'gg-side')) {
@@ -133,83 +139,149 @@ class GG {
     return false;
   }
 
-  resizeColumnEventHandler() {
+  autoFitColumnWidth(target) {
+    if (hasClass(target, 'gg-resizer')) {
+      const resizingSide = this.getSideOfTarget(target);
+      if (this.resizingSide === 'lSide') {
+        this[resizingSide].autoFitWidth(target, this.rSide);
+      } else {
+        this[resizingSide].autoFitWidth(target);
+      }
+      this.resizingSide = false;
+      removeClass(this.$container, 'disable-selection col-resizing');
+      removeClass(this.guideLine, 'active');
+    }
+  }
+
+  initResizeColumnWidth({ target, clientX }) {
+    if (hasClass(target, 'gg-resizer')) {
+      this.resizingSide = this.getSideOfTarget(target);
+      if (this.resizingSide) {
+        if (this.resizingSide === 'rSide') {
+          this.rSideMarginLeft = parseInt(
+            this.rSide.$side.style.marginLeft,
+            10
+          );
+        } else {
+          this.rSideMarginLeft = 0;
+        }
+        addClass(this.$container, 'disable-selection col-resizing');
+        let guideLeft =
+          this[this.resizingSide].resizeMouseDown(target, clientX) +
+          this.rSideMarginLeft;
+
+        this.guideLine.style.transform = `translateX(${guideLeft}px)`;
+        // addClass(this.guideLine, 'active');
+      }
+    }
+  }
+
+  resizingColumnWidth(clientX) {
+    if (this.resizingSide) {
+      const guideLeft =
+        this[this.resizingSide].moveGuideLine(clientX) + this.rSideMarginLeft;
+      this.guideLine.style.transform = `translateX(${guideLeft}px)`;
+      addClass(this.guideLine, 'active');
+    }
+  }
+
+  resizedColumnWidth({ target, clientX }) {
+    if (this.resizingSide) {
+      if (this.resizingSide === 'lSide') {
+        this[this.resizingSide].resizeColumns(clientX, this.rSide);
+      } else if (this.resizingSide === 'rSide') {
+        this[this.resizingSide].resizeColumns(clientX);
+      }
+      this[this.resizingSide].resizeClear(target);
+      this.resizingSide = false;
+      removeClass(this.$container, 'disable-selection col-resizing');
+      removeClass(this.guideLine, 'active');
+    }
+  }
+
+  focusCell({ target, clientX, clientY }) {
+    const elm = hasClassInParents(target, 'gg-cell');
+    if (elm) {
+      this.cursorPoint = {
+        x: clientX,
+        y: clientY,
+      };
+      const side = this.getSideOfTarget(elm);
+      this.focusedCell = elm;
+      this[side].setFocusLayer(elm);
+      if (!this[side].body.gridMouseDownWrapper) this[side].body.grid = this;
+    }
+  }
+
+  selectCell({ target, clientX, clientY }) {
+    if (
+      this.cursorPoint &&
+      this.cursorPoint.x &&
+      this.cursorPoint.y &&
+      this.focusedCell
+    ) {
+      const dist = getDistance(
+        this.cursorPoint.x,
+        this.cursorPoint.y,
+        clientX,
+        clientY
+      );
+      if (dist > 10) {
+        const elm = hasClassInParents(target, 'gg-cell');
+        if (elm) {
+          const side = this.getSideOfTarget(elm);
+          if (!this[side].body.selectionStartCell)
+            this[side].body.startSelect(this.focusedCell);
+          this[side].body.selectCell(elm);
+        }
+      }
+    }
+  }
+
+  selectedCell() {
+    if (this.cursorPoint) {
+      this.cursorPoint = null;
+    }
+  }
+
+  mouseDownWrapper({ target, clientX, clientY }) {
+    this.unsetFocusLayer();
+    this.unsetSelectionLayer();
+    this.initResizeColumnWidth({ target, clientX });
+    this.focusCell({ target, clientX, clientY });
+  }
+
+  mouseEventHandler() {
     const { target } = this.props;
     target.addEventListener('dblclick', e => {
-      if (hasClass(e.target, 'gg-resizer')) {
-        const resizingSide = this.detectSideOnClickResizer(e.target);
-        if (this.resizingSide === 'lSide') {
-          this[resizingSide].autoFitWidth(e.target, this.rSide);
-        } else {
-          this[resizingSide].autoFitWidth(e.target);
-        }
-        this.resizingSide = false;
-        removeClass(this.$container, 'disable-selection col-resizing');
-        removeClass(this.guideLine, 'active');
-      }
+      this.autoFitColumnWidth(e.target);
     });
-    target.addEventListener('mousedown', e => {
-      this.unsetFocusLayer();
-      if (hasClass(e.target, 'gg-resizer')) {
-        this.resizingSide = this.detectSideOnClickResizer(e.target);
-        if (this.resizingSide) {
-          if (this.resizingSide === 'rSide') {
-            this.rSideMarginLeft = parseInt(
-              this.rSide.$side.style.marginLeft,
-              10
-            );
-          } else {
-            this.rSideMarginLeft = 0;
-          }
-          addClass(this.$container, 'disable-selection col-resizing');
-          let guideLeft =
-            this[this.resizingSide].resizeMouseDown(e.target, e.clientX) +
-            this.rSideMarginLeft;
 
-          this.guideLine.style.transform = `translateX(${guideLeft}px)`;
-          // addClass(this.guideLine, 'active');
-        }
-      } else {
-        const elm = hasClassInParents(e.target, 'gg-cell');
-        if (elm) {
-          const side = this.detectSideOnClickResizer(elm);
-          this[side].setFocusLayer(elm);
-        }
-      }
+    target.addEventListener('mousedown', e => {
+      const { target, clientX, clientY } = e;
+      this.mouseDownWrapper({ target, clientX, clientY });
     });
+
     target.addEventListener('mouseup', e => {
-      if (this.resizingSide) {
-        if (this.resizingSide === 'lSide') {
-          this[this.resizingSide].resizeColumns(e.clientX, this.rSide);
-        } else if (this.resizingSide === 'rSide') {
-          this[this.resizingSide].resizeColumns(e.clientX);
-        }
-        this[this.resizingSide].resizeClear(e.target);
-        this.resizingSide = false;
-        removeClass(this.$container, 'disable-selection col-resizing');
-        removeClass(this.guideLine, 'active');
-      }
+      this.resizedColumnWidth({ target: e.target, clientX: e.clientX });
+      this.selectedCell();
     });
 
     target.addEventListener('mousemove', e => {
-      if (this.resizingSide) {
-        const guideLeft =
-          this[this.resizingSide].moveGuideLine(e.clientX) +
-          this.rSideMarginLeft;
-        this.guideLine.style.transform = `translateX(${guideLeft}px)`;
-        addClass(this.guideLine, 'active');
-      }
+      const { target, clientX, clientY } = e;
+      this.resizingColumnWidth(clientX);
+      this.selectCell({ target, clientX, clientY });
     });
-
-    // target.addEventListener('contextmenu', e => {
-    //   console.log('right click');
-    //   e.preventDefault();
-    // });
   }
 
   unsetFocusLayer() {
     this.lSide.unsetFocusLayer();
     this.rSide.unsetFocusLayer();
+  }
+
+  unsetSelectionLayer() {
+    this.lSide.unsetSelectionLayer();
+    this.rSide.unsetSelectionLayer();
   }
 
   sortEventHandler() {
@@ -230,8 +302,8 @@ class GG {
   setEventHandler() {
     this.sortEventHandler();
     this.scrollEventHandler();
-    this.resizeColumnEventHandler();
-    this.hoverEventHandler();
+    // this.hoverEventHandler();
+    this.mouseEventHandler();
   }
 
   drawContainer() {
