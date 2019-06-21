@@ -217,6 +217,7 @@ class GG {
       this.focusedCell = elm;
       this[side].setFocusLayer(elm);
       if (!this[side].body.gridMouseDownWrapper) this[side].body.grid = this;
+      addClass(this.$container, 'active-focus');
     }
   }
 
@@ -286,6 +287,15 @@ class GG {
       this.resizingColumnWidth(clientX);
       this.selectCell({ target, clientX, clientY });
     });
+
+    const element = this.$container;
+    const outsideClickListener = e => {
+      if (!element.contains(e.target) && hasClass(element, 'active-focus')) {
+        removeClass(element, 'active-focus');
+      }
+    };
+
+    document.addEventListener('click', outsideClickListener);
   }
 
   unsetFocusLayer() {
@@ -318,6 +328,7 @@ class GG {
     this.scrollEventHandler();
     // this.hoverEventHandler();
     this.mouseEventHandler();
+    this.shortcutEventHandler();
   }
 
   drawContainer() {
@@ -367,6 +378,37 @@ class GG {
     this.guideLine.appendChild(handle);
     addClass(this.guideLine, 'gg-guide-line');
     this.$container.appendChild(this.guideLine);
+  }
+
+  combineContents(lContents, rContents) {
+    return rContents.reduce((acc, curr, i, arr) => {
+      const row = lContents[i] ? [...lContents[i], ...curr] : curr;
+      acc += row.join('\t');
+      if (i !== arr.length) {
+        acc += '\n';
+      }
+      return acc;
+    }, '');
+  }
+
+  copyFromSelection(e) {
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 67) {
+      if (hasClass(this.$container, 'active-focus')) {
+        const lSideContents = this.lSide.body.getSelectionData();
+        const rSideContents = this.rSide.body.getSelectionData();
+        const contents = this.combineContents(lSideContents, rSideContents);
+        const ta = document.createElement('textarea');
+        this.props.target.appendChild(ta);
+        ta.value = contents;
+        ta.select();
+        document.execCommand('copy');
+        this.props.target.removeChild(ta);
+      }
+    }
+  }
+
+  shortcutEventHandler() {
+    window.addEventListener('keydown', this.copyFromSelection.bind(this));
   }
 }
 

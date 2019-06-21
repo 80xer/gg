@@ -96,6 +96,16 @@
         width: 1px;
       }
     }
+
+    &.active-focus {
+      .gg-focus-layer {
+        &.active {
+          .gg-focus-line {
+            background-color: #00cccc;
+          }
+        }
+      }
+    }
   }
 
   table {
@@ -201,16 +211,6 @@
         z-index: 1;
         position: absolute;
         background-color: #aaaaaa;
-      }
-    }
-
-    &.active-focus {
-      .gg-focus-layer {
-        &.active {
-          .gg-focus-line {
-            background-color: #00cccc;
-          }
-        }
       }
     }
 

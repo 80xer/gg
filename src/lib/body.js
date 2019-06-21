@@ -120,10 +120,11 @@ class Body {
 
   createTrs(data, columns, startIdx, endIdx) {
     const result = data.slice(startIdx, endIdx + 1).map((row, num) => {
-      const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
-      const tds = this.createTd(columns, row, startIdx + num);
+      const fixNum = startIdx + num;
+      const className = `gg-row-${fixNum % 2 ? 'odd' : 'even'}`;
+      const tds = this.createTd(columns, row, fixNum);
       let style = `height:${this.cellHeight}px;`;
-      return `<tr class="${className}" style="${style}" data-row-index="${num}">${tds}</tr>`;
+      return `<tr class="${className}" style="${style}" data-row-index="${fixNum}">${tds}</tr>`;
     });
     return result.join('');
   }
@@ -133,6 +134,7 @@ class Body {
     let remainderStartIdx = 0;
     data.slice(startIdx, endIdx + 1).forEach((row, num) => {
       if (trs[num]) {
+        trs[num].dataset.rowIndex = startIdx + num;
         const tds = trs[num].querySelectorAll('td');
         columns.forEach((column, cnum) => {
           const div = tds[cnum].querySelector('div');
@@ -309,7 +311,6 @@ class Body {
         return acc + w;
       }
     }, 0);
-
     return {
       left: left,
       top: rowIndex * cell.offsetHeight,
@@ -349,7 +350,6 @@ class Body {
     if (this.focusLayer.childNodes.length !== 4) {
       this.createFocusLine();
     }
-    addClass(this.$area, 'active-focus');
     // top
     focusLayer.childNodes[0].style.left = `${left}px`;
     focusLayer.childNodes[0].style.top = `${top}px`;
@@ -419,6 +419,22 @@ class Body {
     };
   }
 
+  getSelectionData() {
+    if (!this.selectionIndex) return [];
+    const { sRow, sCol, eRow, eCol } = this.selectionIndex;
+    const data = [];
+    for (let i = sRow; i <= eRow; i++) {
+      const row = [];
+      for (let j = sCol; j <= eCol; j++) {
+        const elm = this.getCellElementByIndex({ row: i, col: j });
+        row.push(elm.textContent);
+      }
+      data.push(row);
+    }
+
+    return data;
+  }
+
   showSelection() {
     const cols = this.props.head.colgroup.$el.querySelectorAll('col');
     const { selectionStartCell, selectionEndCell, selectionLayer } = this;
@@ -468,15 +484,6 @@ class Body {
   }
 
   setEventHandler() {
-    const element = this.$area;
-    const outsideClickListener = e => {
-      if (!element.contains(e.target) && hasClass(element, 'active-focus')) {
-        removeClass(element, 'active-focus');
-      }
-    };
-
-    document.addEventListener('click', outsideClickListener);
-
     this.tbody.addEventListener('startSelectEvt', e => {
       this.selectionStartCell = e.detail.elm;
     });
@@ -491,6 +498,7 @@ class Body {
     const cols = this.props.head.colgroup.$el.querySelectorAll('col');
     const { left, top, width, height, row, col } = this.getCellInfo(elm, cols);
     this.showFocusLayer({ left, top, width, height });
+    this.setSelectionIndex({ sRow: row, sCol: col, eRow: row, eCol: col });
     return { left, top, width, height, row, col };
   }
 }
