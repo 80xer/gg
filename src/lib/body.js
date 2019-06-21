@@ -391,9 +391,8 @@ class Body {
   }
 
   selectCell(elm) {
-    const cols = this.props.head.colgroup.$el.querySelectorAll('col');
     if (this.selectionStartCell && this.selectionEndCell !== elm) {
-      const event = new CustomEvent('selectCellEvt', { detail: { elm, cols } });
+      const event = new CustomEvent('selectCellEvt', { detail: { elm } });
       this.tbody.dispatchEvent(event);
     }
   }
@@ -403,7 +402,7 @@ class Body {
     this.selectCell(elm);
   }
 
-  setSelection({ left, width, top, height }) {
+  setSelectionLayerPosition({ left, width, top, height }) {
     const { selectionLayer } = this;
     selectionLayer.style.top = `${top}px`;
     selectionLayer.style.height = `${height}px`;
@@ -411,33 +410,53 @@ class Body {
     selectionLayer.style.width = `${width}px`;
   }
 
-  showSelection(cols) {
+  setSelectionIndex({ sRow, sCol, eRow, eCol }) {
+    this.selectionIndex = {
+      sRow,
+      sCol,
+      eRow,
+      eCol,
+    };
+  }
+
+  showSelection() {
+    const cols = this.props.head.colgroup.$el.querySelectorAll('col');
     const { selectionStartCell, selectionEndCell, selectionLayer } = this;
     const startCellInfo = this.getCellInfo(selectionStartCell, cols);
     const endCellInfo = this.getCellInfo(selectionEndCell, cols);
-    let left, top, width, height;
+    let left, top, width, height, sRow, sCol, eRow, eCol;
     if (startCellInfo.left <= endCellInfo.left) {
       left = startCellInfo.left;
       width = endCellInfo.left - startCellInfo.left + endCellInfo.width;
+      sCol = startCellInfo.col;
+      eCol = endCellInfo.col;
     } else {
       left = endCellInfo.left;
       width = startCellInfo.left - endCellInfo.left + startCellInfo.width;
+      sCol = endCellInfo.col;
+      eCol = startCellInfo.col;
     }
 
     if (startCellInfo.top <= endCellInfo.top) {
       top = startCellInfo.top;
       height = endCellInfo.top - startCellInfo.top + endCellInfo.height;
+      sRow = startCellInfo.row;
+      eRow = endCellInfo.row;
     } else {
       top = endCellInfo.top;
       height = startCellInfo.top - endCellInfo.top + startCellInfo.height;
+      sRow = endCellInfo.row;
+      eRow = startCellInfo.row;
     }
 
-    this.setSelection({
+    this.setSelectionLayerPosition({
       left,
       top,
       width,
       height,
     });
+
+    this.setSelectionIndex({ sRow, sCol, eRow, eCol });
 
     addClass(selectionLayer, 'active');
   }
@@ -464,7 +483,7 @@ class Body {
 
     this.tbody.addEventListener('selectCellEvt', e => {
       this.selectionEndCell = e.detail.elm;
-      this.showSelection(e.detail.cols);
+      this.showSelection();
     });
   }
 
