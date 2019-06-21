@@ -19,6 +19,17 @@ export function removeClass(el, className) {
   });
 }
 
+export function hasClassInParents(el, className) {
+  let elm = el;
+  while (elm) {
+    if (hasClass(elm, className)) {
+      return elm;
+    }
+    elm = elm.parentNode;
+  }
+  return false;
+}
+
 export function getValue(obj, fields) {
   return fields.split('.').reduce((_obj, prop) => _obj && _obj[prop], obj);
 }

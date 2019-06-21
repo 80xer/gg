@@ -3,7 +3,7 @@ import BorderLine from './border-line';
 import { props as validateProps } from './validate';
 import Side from './side';
 import Pagination from './pagination';
-import { addClass, removeClass, hasClass } from './utils';
+import { addClass, removeClass, hasClass, hasClassInParents } from './utils';
 import defaultProps, { defaultColumnProps } from './defaultProps';
 import './style/gg.scss';
 
@@ -149,6 +149,7 @@ class GG {
       }
     });
     target.addEventListener('mousedown', e => {
+      this.unsetFocusLayer();
       if (hasClass(e.target, 'gg-resizer')) {
         this.resizingSide = this.detectSideOnClickResizer(e.target);
         if (this.resizingSide) {
@@ -166,6 +167,13 @@ class GG {
             this.rSideMarginLeft;
 
           this.guideLine.style.transform = `translateX(${guideLeft}px)`;
+          // addClass(this.guideLine, 'active');
+        }
+      } else {
+        const elm = hasClassInParents(e.target, 'gg-cell');
+        if (elm) {
+          const side = this.detectSideOnClickResizer(elm);
+          this[side].setFocusLayer(elm);
         }
       }
     });
@@ -193,10 +201,15 @@ class GG {
       }
     });
 
-    target.addEventListener('contextmenu', e => {
-      console.log('right click');
-      e.preventDefault();
-    });
+    // target.addEventListener('contextmenu', e => {
+    //   console.log('right click');
+    //   e.preventDefault();
+    // });
+  }
+
+  unsetFocusLayer() {
+    this.lSide.unsetFocusLayer();
+    this.rSide.unsetFocusLayer();
   }
 
   sortEventHandler() {
@@ -257,7 +270,15 @@ class GG {
   }
 
   createGuideLine() {
+    const handle = document.createElement('div');
+    const height = parseInt(
+      this.rSide.$side.querySelector('.gg-resizer').style.height,
+      10
+    );
+    handle.style.height = `${height}px`;
+    addClass(handle, 'handle');
     this.guideLine = document.createElement('div');
+    this.guideLine.appendChild(handle);
     addClass(this.guideLine, 'gg-guide-line');
     this.$container.appendChild(this.guideLine);
   }

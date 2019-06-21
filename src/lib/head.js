@@ -35,8 +35,8 @@ class Head {
 
   appendColResizer() {
     const resizerContainer = this.createColResizer();
-    resizerContainer.style.height = `${this.height}px`;
-    resizerContainer.style.marginTop = `-${this.height}px`;
+    resizerContainer.style.height = `${this.height + 2}px`;
+    resizerContainer.style.marginTop = `-${this.height + 2}px`;
     this.resizerContainer = resizerContainer;
     this.resizers = this.resizerContainer.querySelectorAll('.gg-resizer');
     this.container.appendChild(resizerContainer);
@@ -54,7 +54,7 @@ class Head {
       col.dataset.colIndex = i;
       leftPos += parseInt(cg.width || 0, 10) || 0;
       col.style.left = `${leftPos - 3}px`;
-      col.style.height = `${this.height}px`;
+      col.style.height = `${this.height + 2}px`;
       resizer.appendChild(col);
       // }
     });

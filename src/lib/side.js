@@ -267,7 +267,14 @@ class Side {
       head.resizerContainer.querySelectorAll('.gg-resizer'),
       rs => parseInt(rs.style.left, 10)
     );
-    this.resizeColumnsWithVectorPointX(maxWidth - width + 10, colIndex, rSide);
+
+    if (maxWidth > width) {
+      this.resizeColumnsWithVectorPointX(
+        maxWidth - width + 10,
+        colIndex,
+        rSide
+      );
+    }
     this.resizeClear();
   }
 
@@ -309,6 +316,56 @@ class Side {
 
     this.body.$area.addEventListener('mouseover', changeBackgroundColorOfTr);
     this.body.$area.addEventListener('mouseout', changeBackgroundColorOfTr);
+  }
+
+  getCellInfo(cell) {
+    const { head } = this;
+    const cols = head.colgroup.$el.querySelectorAll('col');
+    const columnName = cell.dataset.columnName;
+    const rowIndex = cell.parentNode.dataset.rowIndex;
+    let colIndex = 0;
+    const left = [...cols].slice(0).reduce((acc, col, i, arr) => {
+      if (col.dataset.columnName === columnName) {
+        arr.splice(1);
+        colIndex = i;
+        return acc;
+      } else {
+        const w = parseInt(col.getAttribute('width'), 10);
+        return acc + w;
+      }
+    }, 0);
+
+    return {
+      left: left,
+      top: rowIndex * cell.offsetHeight,
+      width: cell.offsetWidth,
+      height: cell.offsetHeight,
+      row: rowIndex,
+      col: colIndex,
+    };
+  }
+
+  setFocusLayer(elm) {
+    const { left, top, width, height, row, col } = this.getCellInfo(elm);
+    this.setSelection({ sRow: row, sCol: col, eRow: row, eCol: col });
+    this.body.showFocusLayer({ left, top, width, height });
+  }
+
+  unsetFocusLayer() {
+    this.body.hideFocusLayer();
+  }
+
+  setSelection({ sRow, sCol, eRow, eCol }) {
+    this.selectArea = {
+      sRow,
+      sCol,
+      eRow,
+      eCol,
+    };
+  }
+
+  removeSelection() {
+    this.selectArea = {};
   }
 }
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import { addClass, getValue } from './utils';
+import { addClass, getValue, removeClass, hasClass } from './utils';
 import ColGroup from './colgroup';
 import sort from './sort';
 
@@ -22,6 +22,7 @@ class Body {
     this.cellHeight = parseInt(this.fontSize, 10) + 16;
     this.bodyAreaHeight = this.props.data.length * this.cellHeight;
     this.createBodyArea();
+    this.createFocusLayer();
     this.scrollCnt = 0;
   }
 
@@ -36,6 +37,7 @@ class Body {
     const container = this.createTableContainer();
     area.appendChild(container);
     this.$area = area;
+    this.setEventHandler();
     return area;
   }
 
@@ -64,6 +66,17 @@ class Body {
     // table.style.height = `${cellHeight * data.length}px`;
     this.table = table;
     return table;
+  }
+
+  setEventHandler() {
+    const element = this.$area;
+    const outsideClickListener = e => {
+      if (!element.contains(e.target) && hasClass(element, 'active-focus')) {
+        removeClass(element, 'active-focus');
+      }
+    };
+
+    document.addEventListener('click', outsideClickListener);
   }
 
   sortBody(fields, direction) {
@@ -115,7 +128,7 @@ class Body {
       const className = `gg-row-${num % 2 ? 'odd' : 'even'}`;
       const tds = this.createTd(columns, row, startIdx + num);
       let style = `height:${this.cellHeight}px;`;
-      return `<tr class="${className}" style="${style}">${tds}</tr>`;
+      return `<tr class="${className}" style="${style}" data-row-index="${num}">${tds}</tr>`;
     });
     return result.join('');
   }
@@ -274,7 +287,7 @@ class Body {
           template: column.cellTemplate,
         });
       }
-      td = `<td style="${style}" ${dataSetColumnName}>${cell}</td>`;
+      td = `<td class="gg-cell" style="${style}" ${dataSetColumnName}>${cell}</td>`;
       // td.appendChild(cell);
       tds += td;
     });
@@ -285,6 +298,56 @@ class Body {
     this.updateTbody(
       this.getTrArray(this.props.data, this.props.pagination.perPage, idx)
     );
+  }
+
+  createFocusLayer() {
+    this.focusLayer = document.createElement('div');
+    addClass(this.focusLayer, 'gg-focus-layer');
+    this.$area.appendChild(this.focusLayer);
+  }
+
+  createFocusLine() {
+    this.focusLayer.innerHTML = '';
+    this.focusLayer.innerHTML += `<div class="gg-focus-line"></div>`;
+    this.focusLayer.innerHTML += `<div class="gg-focus-line"></div>`;
+    this.focusLayer.innerHTML += `<div class="gg-focus-line"></div>`;
+    this.focusLayer.innerHTML += `<div class="gg-focus-line"></div>`;
+  }
+
+  showFocusLayer({ left, top, width, height }) {
+    const { focusLayer } = this;
+    if (this.focusLayer.childNodes.length !== 4) {
+      this.createFocusLine();
+    }
+    addClass(this.$area, 'active-focus');
+    // top
+    focusLayer.childNodes[0].style.left = `${left}px`;
+    focusLayer.childNodes[0].style.top = `${top}px`;
+    focusLayer.childNodes[0].style.height = `1px`;
+    focusLayer.childNodes[0].style.width = `${width}px`;
+
+    // right
+    focusLayer.childNodes[1].style.left = `${left + width}px`;
+    focusLayer.childNodes[1].style.top = `${top}px`;
+    focusLayer.childNodes[1].style.height = `${height}px`;
+    focusLayer.childNodes[1].style.width = `1px`;
+
+    // bottom
+    focusLayer.childNodes[2].style.left = `${left}px`;
+    focusLayer.childNodes[2].style.top = `${top + height}px`;
+    focusLayer.childNodes[2].style.height = `1px`;
+    focusLayer.childNodes[2].style.width = `${width}px`;
+
+    // left
+    focusLayer.childNodes[3].style.left = `${left}px`;
+    focusLayer.childNodes[3].style.top = `${top}px`;
+    focusLayer.childNodes[3].style.height = `${height}px`;
+    focusLayer.childNodes[3].style.width = `1px`;
+    addClass(focusLayer, 'active');
+  }
+
+  hideFocusLayer() {
+    removeClass(this.focusLayer, 'active');
   }
 }
 
