@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import BorderLine from '../border-line';
-import { hasClass } from '../utils';
+import BorderLine from '../js/border-line';
+import { hasClass } from '../js/utils';
 
 describe('BorderLine', () => {
   it('widthout type', () => {

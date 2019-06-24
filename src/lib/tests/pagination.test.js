@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import Pagination from '../pagination';
-import defaultProps from '../defaultProps';
-import sampleProps from './sampleProps';
+import Pagination from '../js/pagination';
+import defaultProps from '../js/defaultProps';
+import sampleProps from '../../demo/sampleProps';
 
 let container;
 

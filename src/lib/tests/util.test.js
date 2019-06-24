@@ -1,4 +1,4 @@
-import { addClass, getDistance } from '../utils';
+import { addClass, getDistance } from '../js/utils';
 
 describe('util', () => {
   it('addClass from classList', () => {

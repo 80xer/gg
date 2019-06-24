@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import Body from '../body';
-import defaultProps from '../defaultProps';
-import sampleProps from './sampleProps';
+import Body from '../js/body';
+import defaultProps from '../js/defaultProps';
+import sampleProps from '../../demo/sampleProps';
 
 describe('Body', () => {
   it('create', () => {

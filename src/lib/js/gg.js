@@ -11,7 +11,7 @@ import {
   getDistance,
 } from './utils';
 import defaultProps, { defaultColumnProps } from './defaultProps';
-import './style/gg.scss';
+import '../style/gg.scss';
 
 class GG {
   constructor(props) {
