@@ -1940,14 +1940,11 @@
         this.lSide = new Side(lSideProps);
         var lSideWidth = lSideColumns.reduce(function (sumWidth, col) {
           return col.width + sumWidth;
-        }, 0);
-
-        if (this.props.scroll !== false) {
-          var lSideBottomSpace = document.createElement('div');
-          addClass(lSideBottomSpace, 'gg-lside-bottom-space');
-          this.lSide.$side.appendChild(lSideBottomSpace);
-        } // this.lSide.$side.style.width = `${lSideWidth}px`;
-
+        }, 0); // if (this.props.scroll !== false) {
+        //   const lSideBottomSpace = document.createElement('div');
+        //   addClass(lSideBottomSpace, 'gg-lside-bottom-space');
+        //   this.lSide.$side.appendChild(lSideBottomSpace);
+        // }
 
         this.lSide.setWidth(lSideWidth);
         addClass(this.lSide.$side, 'gg-lside');

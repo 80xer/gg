@@ -13,6 +13,7 @@ import {
 import defaultProps, { defaultColumnProps } from './defaultProps';
 import '../style/gg.scss';
 
+// todo: scroll bar move bug
 class GG {
   constructor(props) {
     this.init(props);
@@ -78,12 +79,11 @@ class GG {
       (sumWidth, col) => col.width + sumWidth,
       0
     );
-    if (this.props.scroll !== false) {
-      const lSideBottomSpace = document.createElement('div');
-      addClass(lSideBottomSpace, 'gg-lside-bottom-space');
-      this.lSide.$side.appendChild(lSideBottomSpace);
-    }
-    // this.lSide.$side.style.width = `${lSideWidth}px`;
+    // if (this.props.scroll !== false) {
+    //   const lSideBottomSpace = document.createElement('div');
+    //   addClass(lSideBottomSpace, 'gg-lside-bottom-space');
+    //   this.lSide.$side.appendChild(lSideBottomSpace);
+    // }
     this.lSide.setWidth(lSideWidth);
     addClass(this.lSide.$side, 'gg-lside');
     this.$container.appendChild(this.lSide.$side);
