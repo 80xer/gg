@@ -938,12 +938,35 @@
         this.focusLayer.innerHTML += "<div class=\"gg-focus-line\"></div>";
       }
     }, {
+      key: "rePositionFocusLayer",
+      value: function rePositionFocusLayer(_ref4) {
+        var width = _ref4.width,
+            vectorPointX = _ref4.vectorPointX;
+        var focusLayer = this.focusLayer;
+        var left = parseInt(focusLayer.childNodes[0].style.left, 10);
+
+        if (width) {
+          focusLayer.childNodes[0].style.width = "".concat(width, "px");
+          focusLayer.childNodes[1].style.left = "".concat(left + width, "px");
+          focusLayer.childNodes[2].style.width = "".concat(width, "px");
+        }
+
+        if (vectorPointX) {
+          var newLeft = left + vectorPointX;
+          var leftOfRightLine = parseInt(focusLayer.childNodes[1].style.left, 10);
+          focusLayer.childNodes[0].style.left = "".concat(newLeft, "px");
+          focusLayer.childNodes[1].style.left = "".concat(leftOfRightLine + vectorPointX, "px");
+          focusLayer.childNodes[2].style.left = "".concat(newLeft, "px");
+          focusLayer.childNodes[3].style.left = "".concat(newLeft, "px");
+        }
+      }
+    }, {
       key: "showFocusLayer",
-      value: function showFocusLayer(_ref4) {
-        var left = _ref4.left,
-            top = _ref4.top,
-            width = _ref4.width,
-            height = _ref4.height;
+      value: function showFocusLayer(_ref5) {
+        var left = _ref5.left,
+            top = _ref5.top,
+            width = _ref5.width,
+            height = _ref5.height;
         var focusLayer = this.focusLayer;
 
         if (this.focusLayer.childNodes.length !== 4) {
@@ -989,9 +1012,9 @@
       }
     }, {
       key: "startSelectByRowColumn",
-      value: function startSelectByRowColumn(_ref5) {
-        var row = _ref5.row,
-            col = _ref5.col;
+      value: function startSelectByRowColumn(_ref6) {
+        var row = _ref6.row,
+            col = _ref6.col;
         var elm = this.getCellElementByIndex({
           row: row,
           col: col
@@ -1012,9 +1035,9 @@
       }
     }, {
       key: "selectCellByRowColumn",
-      value: function selectCellByRowColumn(_ref6) {
-        var row = _ref6.row,
-            col = _ref6.col;
+      value: function selectCellByRowColumn(_ref7) {
+        var row = _ref7.row,
+            col = _ref7.col;
         var elm = this.getCellElementByIndex({
           row: row,
           col: col
@@ -1023,11 +1046,11 @@
       }
     }, {
       key: "setSelectionLayerPosition",
-      value: function setSelectionLayerPosition(_ref7) {
-        var left = _ref7.left,
-            width = _ref7.width,
-            top = _ref7.top,
-            height = _ref7.height;
+      value: function setSelectionLayerPosition(_ref8) {
+        var left = _ref8.left,
+            width = _ref8.width,
+            top = _ref8.top,
+            height = _ref8.height;
         var selectionLayer = this.selectionLayer;
         selectionLayer.style.top = "".concat(top, "px");
         selectionLayer.style.height = "".concat(height, "px");
@@ -1035,12 +1058,22 @@
         selectionLayer.style.width = "".concat(width, "px");
       }
     }, {
+      key: "setFocusIndex",
+      value: function setFocusIndex(_ref9) {
+        var row = _ref9.row,
+            col = _ref9.col;
+        this.focusIndex = {
+          row: row,
+          col: col
+        };
+      }
+    }, {
       key: "setSelectionIndex",
-      value: function setSelectionIndex(_ref8) {
-        var sRow = _ref8.sRow,
-            sCol = _ref8.sCol,
-            eRow = _ref8.eRow,
-            eCol = _ref8.eCol;
+      value: function setSelectionIndex(_ref10) {
+        var sRow = _ref10.sRow,
+            sCol = _ref10.sCol,
+            eRow = _ref10.eRow,
+            eCol = _ref10.eCol;
         this.selectionIndex = {
           sRow: sRow,
           sCol: sCol,
@@ -1163,6 +1196,10 @@
           top: top,
           width: width,
           height: height
+        });
+        this.setFocusIndex({
+          row: row,
+          col: col
         });
         this.setSelectionIndex({
           sRow: row,
@@ -1379,7 +1416,7 @@
           head.resizeTarget = target;
           head.headCols = head.colgroup.$el.querySelectorAll('col');
           head.bodyCols = body.colgroup.$el.querySelectorAll('col');
-          head.resizeColIdx = head.resizeTarget.dataset.colIndex;
+          head.resizeColIdx = parseInt(head.resizeTarget.dataset.colIndex, 0);
           head.resizableColumnWidth = true;
           head.startColLeft = [].map.call(head.resizerContainer.querySelectorAll('.gg-resizer'), function (rs) {
             return parseInt(rs.style.left, 10);
@@ -1448,6 +1485,18 @@
         headCols[resizeColIdx].setAttribute('width', newWidth); // 본문 컬럼
 
         bodyCols[resizeColIdx].setAttribute('width', newWidth);
+
+        if (this.body.focusIndex) {
+          if (this.body.focusIndex.col > resizeColIdx) {
+            this.body.rePositionFocusLayer({
+              vectorPointX: vectorPointX
+            });
+          } else if (this.body.focusIndex.col === resizeColIdx) {
+            this.body.rePositionFocusLayer({
+              width: newWidth
+            });
+          }
+        }
       }
     }, {
       key: "autoFitWidth",

@@ -184,7 +184,7 @@ class Side {
       head.resizeTarget = target;
       head.headCols = head.colgroup.$el.querySelectorAll('col');
       head.bodyCols = body.colgroup.$el.querySelectorAll('col');
-      head.resizeColIdx = head.resizeTarget.dataset.colIndex;
+      head.resizeColIdx = parseInt(head.resizeTarget.dataset.colIndex, 0);
       head.resizableColumnWidth = true;
       head.startColLeft = [].map.call(
         head.resizerContainer.querySelectorAll('.gg-resizer'),
@@ -246,6 +246,14 @@ class Side {
     headCols[resizeColIdx].setAttribute('width', newWidth);
     // 본문 컬럼
     bodyCols[resizeColIdx].setAttribute('width', newWidth);
+
+    if (this.body.focusIndex) {
+      if (this.body.focusIndex.col > resizeColIdx) {
+        this.body.rePositionFocusLayer({ vectorPointX });
+      } else if (this.body.focusIndex.col === resizeColIdx) {
+        this.body.rePositionFocusLayer({ width: newWidth });
+      }
+    }
   }
 
   autoFitWidth(target, rSide) {

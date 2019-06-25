@@ -345,6 +345,27 @@ class Body {
     this.focusLayer.innerHTML += `<div class="gg-focus-line"></div>`;
   }
 
+  rePositionFocusLayer({ width, vectorPointX }) {
+    const { focusLayer } = this;
+    const left = parseInt(focusLayer.childNodes[0].style.left, 10);
+
+    if (width) {
+      focusLayer.childNodes[0].style.width = `${width}px`;
+      focusLayer.childNodes[1].style.left = `${left + width}px`;
+      focusLayer.childNodes[2].style.width = `${width}px`;
+    }
+
+    if (vectorPointX) {
+      const newLeft = left + vectorPointX;
+      const leftOfRightLine = parseInt(focusLayer.childNodes[1].style.left, 10);
+      focusLayer.childNodes[0].style.left = `${newLeft}px`;
+      focusLayer.childNodes[1].style.left = `${leftOfRightLine +
+        vectorPointX}px`;
+      focusLayer.childNodes[2].style.left = `${newLeft}px`;
+      focusLayer.childNodes[3].style.left = `${newLeft}px`;
+    }
+  }
+
   showFocusLayer({ left, top, width, height }) {
     const { focusLayer } = this;
     if (this.focusLayer.childNodes.length !== 4) {
@@ -408,6 +429,10 @@ class Body {
     selectionLayer.style.height = `${height}px`;
     selectionLayer.style.left = `${left}px`;
     selectionLayer.style.width = `${width}px`;
+  }
+
+  setFocusIndex({ row, col }) {
+    this.focusIndex = { row, col };
   }
 
   setSelectionIndex({ sRow, sCol, eRow, eCol }) {
@@ -498,6 +523,7 @@ class Body {
     const cols = this.props.head.colgroup.$el.querySelectorAll('col');
     const { left, top, width, height, row, col } = this.getCellInfo(elm, cols);
     this.showFocusLayer({ left, top, width, height });
+    this.setFocusIndex({ row, col });
     this.setSelectionIndex({ sRow: row, sCol: col, eRow: row, eCol: col });
     return { left, top, width, height, row, col };
   }
