@@ -1,7 +1,5 @@
-(function (MaterialDatetimePicker) {
+(function () {
   'use strict';
-
-  MaterialDatetimePicker = MaterialDatetimePicker && MaterialDatetimePicker.hasOwnProperty('default') ? MaterialDatetimePicker['default'] : MaterialDatetimePicker;
 
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -2647,12 +2645,5 @@
       }
     }));
   });
-  var picker = new MaterialDatetimePicker({}).on('submit', function (d) {
-    output.innerText = d;
-  });
-  var el = document.querySelector('.c-datepicker-btn');
-  el.addEventListener('click', function () {
-    picker.open();
-  }, false);
 
-}(MaterialDatetimePicker));
+}());

@@ -1,9 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import gg from '../../dist/gg.umd';
-import './demo.scss';
+import '../../dist/gg.css';
 import props from './sampleProps';
-// import MaterialDatetimePicker from '../../dist/material-datetime-picker.umd';
-import MaterialDatetimePicker from 'material-datetime-picker';
+import './demo.scss';
 
 const container = document.querySelector('#root');
 const container2 = document.querySelector('#root2');
@@ -247,17 +246,3 @@ fetch('https://www.lawtalk.co.kr/api/user/lawyers')
       },
     });
   });
-
-var picker = new MaterialDatetimePicker({}).on('submit', function(d) {
-  output.innerText = d;
-});
-
-var el = document.querySelector('.c-datepicker-btn');
-
-el.addEventListener(
-  'click',
-  function() {
-    picker.open();
-  },
-  false
-);

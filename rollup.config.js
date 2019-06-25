@@ -1,8 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
-import sass from 'rollup-plugin-sass';
-import css from 'rollup-plugin-css-only';
+import scss from 'rollup-plugin-scss';
 import pkg from './package.json';
 
 export default [
@@ -14,10 +13,9 @@ export default [
       format: 'umd',
     },
     plugins: [
-      css(),
       resolve(), // so Rollup can find `ms`
       commonjs(), // so Rollup can convert `ms` to an ES module
-      sass({
+      scss({
         output: 'dist/gg.css',
       }),
       babel(),
@@ -31,10 +29,9 @@ export default [
       { file: pkg.module, format: 'es' },
     ],
     plugins: [
-      css(),
       resolve(), // so Rollup can find `ms`
       commonjs(), // so Rollup can convert `ms` to an ES module
-      sass({
+      scss({
         output: 'dist/gg.css',
       }),
       babel(),
@@ -46,7 +43,7 @@ export default [
     plugins: [
       resolve(), // so Rollup can find `ms`
       commonjs(), // so Rollup can convert `ms` to an ES module
-      sass({
+      scss({
         output: 'demo/index.css',
       }),
       babel(),
