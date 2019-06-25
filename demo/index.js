@@ -938,35 +938,38 @@
         this.focusLayer.innerHTML += "<div class=\"gg-focus-line\"></div>";
       }
     }, {
-      key: "rePositionFocusLayer",
-      value: function rePositionFocusLayer(_ref4) {
-        var width = _ref4.width,
-            vectorPointX = _ref4.vectorPointX;
+      key: "resetFocusLayerPosition",
+      value: function resetFocusLayerPosition(_ref4) {
+        var _ref4$vectorPointX = _ref4.vectorPointX,
+            vectorPointX = _ref4$vectorPointX === void 0 ? 0 : _ref4$vectorPointX;
         var focusLayer = this.focusLayer;
         var left = parseInt(focusLayer.childNodes[0].style.left, 10);
-
-        if (width) {
-          focusLayer.childNodes[0].style.width = "".concat(width, "px");
-          focusLayer.childNodes[1].style.left = "".concat(left + width, "px");
-          focusLayer.childNodes[2].style.width = "".concat(width, "px");
-        }
-
-        if (vectorPointX) {
-          var newLeft = left + vectorPointX;
-          var leftOfRightLine = parseInt(focusLayer.childNodes[1].style.left, 10);
-          focusLayer.childNodes[0].style.left = "".concat(newLeft, "px");
-          focusLayer.childNodes[1].style.left = "".concat(leftOfRightLine + vectorPointX, "px");
-          focusLayer.childNodes[2].style.left = "".concat(newLeft, "px");
-          focusLayer.childNodes[3].style.left = "".concat(newLeft, "px");
-        }
+        var newLeft = left + vectorPointX;
+        var leftOfRightLine = parseInt(focusLayer.childNodes[1].style.left, 10);
+        focusLayer.childNodes[0].style.left = "".concat(newLeft, "px");
+        focusLayer.childNodes[1].style.left = "".concat(leftOfRightLine + vectorPointX, "px");
+        focusLayer.childNodes[2].style.left = "".concat(newLeft, "px");
+        focusLayer.childNodes[3].style.left = "".concat(newLeft, "px");
+      }
+    }, {
+      key: "resetFocusLayerSize",
+      value: function resetFocusLayerSize(_ref5) {
+        var _ref5$vectorPointX = _ref5.vectorPointX,
+            vectorPointX = _ref5$vectorPointX === void 0 ? 0 : _ref5$vectorPointX;
+        var focusLayer = this.focusLayer;
+        var width = parseInt(focusLayer.childNodes[0].style.width, 10);
+        var left = parseInt(focusLayer.childNodes[1].style.left, 10);
+        focusLayer.childNodes[0].style.width = "".concat(width + vectorPointX, "px");
+        focusLayer.childNodes[1].style.left = "".concat(left + vectorPointX, "px");
+        focusLayer.childNodes[2].style.width = "".concat(width + vectorPointX, "px");
       }
     }, {
       key: "showFocusLayer",
-      value: function showFocusLayer(_ref5) {
-        var left = _ref5.left,
-            top = _ref5.top,
-            width = _ref5.width,
-            height = _ref5.height;
+      value: function showFocusLayer(_ref6) {
+        var left = _ref6.left,
+            top = _ref6.top,
+            width = _ref6.width,
+            height = _ref6.height;
         var focusLayer = this.focusLayer;
 
         if (this.focusLayer.childNodes.length !== 4) {
@@ -1012,9 +1015,9 @@
       }
     }, {
       key: "startSelectByRowColumn",
-      value: function startSelectByRowColumn(_ref6) {
-        var row = _ref6.row,
-            col = _ref6.col;
+      value: function startSelectByRowColumn(_ref7) {
+        var row = _ref7.row,
+            col = _ref7.col;
         var elm = this.getCellElementByIndex({
           row: row,
           col: col
@@ -1035,9 +1038,9 @@
       }
     }, {
       key: "selectCellByRowColumn",
-      value: function selectCellByRowColumn(_ref7) {
-        var row = _ref7.row,
-            col = _ref7.col;
+      value: function selectCellByRowColumn(_ref8) {
+        var row = _ref8.row,
+            col = _ref8.col;
         var elm = this.getCellElementByIndex({
           row: row,
           col: col
@@ -1045,12 +1048,28 @@
         this.selectCell(elm);
       }
     }, {
+      key: "resetSelectionLayerPosition",
+      value: function resetSelectionLayerPosition(_ref9) {
+        var vectorPointX = _ref9.vectorPointX;
+        var selectionLayer = this.selectionLayer;
+        var left = parseInt(selectionLayer.style.left, 10);
+        selectionLayer.style.left = "".concat(left + vectorPointX, "px");
+      }
+    }, {
+      key: "resetSelectionLayerSize",
+      value: function resetSelectionLayerSize(_ref10) {
+        var vectorPointX = _ref10.vectorPointX;
+        var selectionLayer = this.selectionLayer;
+        var width = parseInt(selectionLayer.style.width, 10);
+        selectionLayer.style.width = "".concat(width + vectorPointX, "px");
+      }
+    }, {
       key: "setSelectionLayerPosition",
-      value: function setSelectionLayerPosition(_ref8) {
-        var left = _ref8.left,
-            width = _ref8.width,
-            top = _ref8.top,
-            height = _ref8.height;
+      value: function setSelectionLayerPosition(_ref11) {
+        var left = _ref11.left,
+            width = _ref11.width,
+            top = _ref11.top,
+            height = _ref11.height;
         var selectionLayer = this.selectionLayer;
         selectionLayer.style.top = "".concat(top, "px");
         selectionLayer.style.height = "".concat(height, "px");
@@ -1059,9 +1078,9 @@
       }
     }, {
       key: "setFocusIndex",
-      value: function setFocusIndex(_ref9) {
-        var row = _ref9.row,
-            col = _ref9.col;
+      value: function setFocusIndex(_ref12) {
+        var row = _ref12.row,
+            col = _ref12.col;
         this.focusIndex = {
           row: row,
           col: col
@@ -1069,11 +1088,11 @@
       }
     }, {
       key: "setSelectionIndex",
-      value: function setSelectionIndex(_ref10) {
-        var sRow = _ref10.sRow,
-            sCol = _ref10.sCol,
-            eRow = _ref10.eRow,
-            eCol = _ref10.eCol;
+      value: function setSelectionIndex(_ref13) {
+        var sRow = _ref13.sRow,
+            sCol = _ref13.sCol,
+            eRow = _ref13.eRow,
+            eCol = _ref13.eCol;
         this.selectionIndex = {
           sRow: sRow,
           sCol: sCol,
@@ -1488,12 +1507,24 @@
 
         if (this.body.focusIndex) {
           if (this.body.focusIndex.col > resizeColIdx) {
-            this.body.rePositionFocusLayer({
+            this.body.resetFocusLayerPosition({
               vectorPointX: vectorPointX
             });
           } else if (this.body.focusIndex.col === resizeColIdx) {
-            this.body.rePositionFocusLayer({
-              width: newWidth
+            this.body.resetFocusLayerSize({
+              vectorPointX: vectorPointX
+            });
+          }
+        }
+
+        if (this.body.selectionIndex) {
+          if (this.body.selectionIndex.sCol > resizeColIdx) {
+            this.body.resetSelectionLayerPosition({
+              vectorPointX: vectorPointX
+            });
+          } else if (this.body.selectionIndex.sCol <= resizeColIdx && this.body.selectionIndex.eCol >= resizeColIdx) {
+            this.body.resetSelectionLayerSize({
+              vectorPointX: vectorPointX
             });
           }
         }

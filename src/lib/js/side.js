@@ -249,9 +249,20 @@ class Side {
 
     if (this.body.focusIndex) {
       if (this.body.focusIndex.col > resizeColIdx) {
-        this.body.rePositionFocusLayer({ vectorPointX });
+        this.body.resetFocusLayerPosition({ vectorPointX });
       } else if (this.body.focusIndex.col === resizeColIdx) {
-        this.body.rePositionFocusLayer({ width: newWidth });
+        this.body.resetFocusLayerSize({ vectorPointX });
+      }
+    }
+
+    if (this.body.selectionIndex) {
+      if (this.body.selectionIndex.sCol > resizeColIdx) {
+        this.body.resetSelectionLayerPosition({ vectorPointX });
+      } else if (
+        this.body.selectionIndex.sCol <= resizeColIdx &&
+        this.body.selectionIndex.eCol >= resizeColIdx
+      ) {
+        this.body.resetSelectionLayerSize({ vectorPointX });
       }
     }
   }

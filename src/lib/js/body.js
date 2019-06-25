@@ -345,25 +345,24 @@ class Body {
     this.focusLayer.innerHTML += `<div class="gg-focus-line"></div>`;
   }
 
-  rePositionFocusLayer({ width, vectorPointX }) {
+  resetFocusLayerPosition({ vectorPointX = 0 }) {
     const { focusLayer } = this;
     const left = parseInt(focusLayer.childNodes[0].style.left, 10);
+    const newLeft = left + vectorPointX;
+    const leftOfRightLine = parseInt(focusLayer.childNodes[1].style.left, 10);
+    focusLayer.childNodes[0].style.left = `${newLeft}px`;
+    focusLayer.childNodes[1].style.left = `${leftOfRightLine + vectorPointX}px`;
+    focusLayer.childNodes[2].style.left = `${newLeft}px`;
+    focusLayer.childNodes[3].style.left = `${newLeft}px`;
+  }
 
-    if (width) {
-      focusLayer.childNodes[0].style.width = `${width}px`;
-      focusLayer.childNodes[1].style.left = `${left + width}px`;
-      focusLayer.childNodes[2].style.width = `${width}px`;
-    }
-
-    if (vectorPointX) {
-      const newLeft = left + vectorPointX;
-      const leftOfRightLine = parseInt(focusLayer.childNodes[1].style.left, 10);
-      focusLayer.childNodes[0].style.left = `${newLeft}px`;
-      focusLayer.childNodes[1].style.left = `${leftOfRightLine +
-        vectorPointX}px`;
-      focusLayer.childNodes[2].style.left = `${newLeft}px`;
-      focusLayer.childNodes[3].style.left = `${newLeft}px`;
-    }
+  resetFocusLayerSize({ vectorPointX = 0 }) {
+    const { focusLayer } = this;
+    const width = parseInt(focusLayer.childNodes[0].style.width, 10);
+    const left = parseInt(focusLayer.childNodes[1].style.left, 10);
+    focusLayer.childNodes[0].style.width = `${width + vectorPointX}px`;
+    focusLayer.childNodes[1].style.left = `${left + vectorPointX}px`;
+    focusLayer.childNodes[2].style.width = `${width + vectorPointX}px`;
   }
 
   showFocusLayer({ left, top, width, height }) {
@@ -421,6 +420,18 @@ class Body {
   selectCellByRowColumn({ row, col }) {
     const elm = this.getCellElementByIndex({ row, col });
     this.selectCell(elm);
+  }
+
+  resetSelectionLayerPosition({ vectorPointX }) {
+    const { selectionLayer } = this;
+    const left = parseInt(selectionLayer.style.left, 10);
+    selectionLayer.style.left = `${left + vectorPointX}px`;
+  }
+
+  resetSelectionLayerSize({ vectorPointX }) {
+    const { selectionLayer } = this;
+    const width = parseInt(selectionLayer.style.width, 10);
+    selectionLayer.style.width = `${width + vectorPointX}px`;
   }
 
   setSelectionLayerPosition({ left, width, top, height }) {
