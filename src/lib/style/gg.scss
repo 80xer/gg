@@ -198,7 +198,6 @@
     }
     .gg-body-table-container {
       position: relative;
-      z-index: 1;
     }
 
     .gg-focus-layer {
@@ -208,7 +207,6 @@
         display: block;
       }
       .gg-focus-line {
-        z-index: 1;
         position: absolute;
         background-color: #aaaaaa;
       }
@@ -216,7 +214,6 @@
 
     .gg-selection-layer {
       position: absolute;
-      z-index: 0;
       display: none;
       box-sizing: border-box;
       opacity: 0.1;

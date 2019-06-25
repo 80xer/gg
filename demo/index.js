@@ -547,8 +547,6 @@
       this.cellHeight = parseInt(this.fontSize, 10) + 16;
       this.bodyAreaHeight = this.props.data.length * this.cellHeight;
       this.createBodyArea();
-      this.createFocusLayer();
-      this.createSelectionLayer();
       this.setEventHandler();
     }
 
@@ -564,8 +562,12 @@
           area.style.overflowY = 'hidden';
         }
 
+        var selectionLayer = this.createSelectionLayer();
         var container = this.createTableContainer();
+        var focusLayer = this.createFocusLayer();
+        area.appendChild(selectionLayer);
         area.appendChild(container);
+        area.appendChild(focusLayer);
         this.$area = area;
         return area;
       }
@@ -919,14 +921,14 @@
       value: function createSelectionLayer() {
         this.selectionLayer = document.createElement('div');
         addClass(this.selectionLayer, 'gg-selection-layer');
-        this.$area.appendChild(this.selectionLayer);
+        return this.selectionLayer;
       }
     }, {
       key: "createFocusLayer",
       value: function createFocusLayer() {
         this.focusLayer = document.createElement('div');
         addClass(this.focusLayer, 'gg-focus-layer');
-        this.$area.appendChild(this.focusLayer);
+        return this.focusLayer;
       }
     }, {
       key: "createFocusLine",

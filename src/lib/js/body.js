@@ -28,8 +28,6 @@ class Body {
     this.cellHeight = parseInt(this.fontSize, 10) + 16;
     this.bodyAreaHeight = this.props.data.length * this.cellHeight;
     this.createBodyArea();
-    this.createFocusLayer();
-    this.createSelectionLayer();
     this.setEventHandler();
   }
 
@@ -41,8 +39,12 @@ class Body {
     if (this.props.scroll.y === false) {
       area.style.overflowY = 'hidden';
     }
+    const selectionLayer = this.createSelectionLayer();
     const container = this.createTableContainer();
+    const focusLayer = this.createFocusLayer();
+    area.appendChild(selectionLayer);
     area.appendChild(container);
+    area.appendChild(focusLayer);
     this.$area = area;
     return area;
   }
@@ -328,13 +330,13 @@ class Body {
   createSelectionLayer() {
     this.selectionLayer = document.createElement('div');
     addClass(this.selectionLayer, 'gg-selection-layer');
-    this.$area.appendChild(this.selectionLayer);
+    return this.selectionLayer;
   }
 
   createFocusLayer() {
     this.focusLayer = document.createElement('div');
     addClass(this.focusLayer, 'gg-focus-layer');
-    this.$area.appendChild(this.focusLayer);
+    return this.focusLayer;
   }
 
   createFocusLine() {
