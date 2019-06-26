@@ -2463,6 +2463,7 @@
         if (!this.focusedCell) return;
         var focusedSide = this.getSideOfTarget(this.focusedCell);
         var changed = this[focusedSide].body.changeFocusPosition(code);
+        this.unsetSelectionLayer();
 
         if (!changed) {
           var otherSide, col;

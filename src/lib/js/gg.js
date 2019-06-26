@@ -456,6 +456,7 @@ class GG {
 
     const focusedSide = this.getSideOfTarget(this.focusedCell);
     const changed = this[focusedSide].body.changeFocusPosition(code);
+    this.unsetSelectionLayer();
     if (!changed) {
       let otherSide, col;
       if (focusedSide === 'rSide') {
