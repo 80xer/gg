@@ -204,7 +204,7 @@ class GG {
     }
   }
 
-  focusCell({ target, clientX, clientY }) {
+  focusCellByTarget({ target, clientX, clientY }) {
     const elm = hasClassInParents(target, 'gg-cell');
     if (elm) {
       this.unsetFocusLayer();
@@ -214,11 +214,23 @@ class GG {
         y: clientY,
       };
       const side = this.getSideOfTarget(elm);
-      this.focusedCell = elm;
-      this[side].setFocusLayer(elm);
-      if (!this[side].body.gridMouseDownWrapper) this[side].body.grid = this;
-      addClass(this.$container, 'active-focus');
+      this.focusCell({ elm, side });
     }
+  }
+
+  focusCellByElmOfSide({ elm, side }) {
+    if (elm) {
+      this.unsetFocusLayer();
+      this.unsetSelectionLayer();
+      this.focusCell({ elm, side });
+    }
+  }
+
+  focusCell({ elm, side }) {
+    this.focusedCell = elm;
+    this[side].setFocusLayer(elm);
+    if (!this[side].body.gridMouseDownWrapper) this[side].body.grid = this;
+    addClass(this.$container, 'active-focus');
   }
 
   selectCell({ target, clientX, clientY }) {
@@ -263,7 +275,7 @@ class GG {
 
   mouseDownWrapper({ target, clientX, clientY }) {
     this.initResizeColumnWidth({ target, clientX });
-    this.focusCell({ target, clientX, clientY });
+    this.focusCellByTarget({ target, clientX, clientY });
   }
 
   mouseEventHandler() {
@@ -381,34 +393,87 @@ class GG {
   }
 
   combineContents(lContents, rContents) {
-    return rContents.reduce((acc, curr, i, arr) => {
-      const row = lContents[i] ? [...lContents[i], ...curr] : curr;
-      acc += row.join('\t');
-      if (i !== arr.length) {
-        acc += '\n';
-      }
-      return acc;
-    }, '');
+    if (rContents.length) {
+      return rContents.reduce((acc, curr, i, arr) => {
+        const row = lContents[i] ? [...lContents[i], ...curr] : curr;
+        acc += row.join('\t');
+        if (i !== arr.length) {
+          acc += '\n';
+        }
+        return acc;
+      }, '');
+    } else {
+      return lContents.reduce((acc, curr, i, arr) => {
+        acc += curr.join('\t');
+        if (i !== arr.length) {
+          acc += '\n';
+        }
+        return acc;
+      }, '');
+    }
   }
 
-  copyFromSelection(e) {
+  copyFromSelection() {
+    const lSideContents = this.lSide.body.getSelectionData();
+    const rSideContents = this.rSide.body.getSelectionData();
+    const contents = this.combineContents(lSideContents, rSideContents);
+    const ta = document.createElement('textarea');
+    this.props.target.appendChild(ta);
+    ta.value = contents;
+    ta.select();
+    document.execCommand('copy');
+    this.props.target.removeChild(ta);
+  }
+
+  shortcutEventHandler() {
+    window.addEventListener('keydown', this.keydownWrapper.bind(this));
+  }
+
+  keydownWrapper(e) {
+    // 그리드가 비선택 상태면 리턴
+    if (!hasClass(this.$container, 'active-focus')) return;
+
+    // 복사하기 ctrl+c
     if ((e.ctrlKey || e.metaKey) && e.keyCode === 67) {
-      if (hasClass(this.$container, 'active-focus')) {
-        const lSideContents = this.lSide.body.getSelectionData();
-        const rSideContents = this.rSide.body.getSelectionData();
-        const contents = this.combineContents(lSideContents, rSideContents);
-        const ta = document.createElement('textarea');
-        this.props.target.appendChild(ta);
-        ta.value = contents;
-        ta.select();
-        document.execCommand('copy');
-        this.props.target.removeChild(ta);
+      this.copyFromSelection();
+    }
+
+    // 방향키
+    if (e.keyCode >= 37 && e.keyCode <= 40) {
+      e.preventDefault();
+      if (e.shiftKey) {
+        // 선택영역 크기 조정
+        console.log('todo: 선택영역 크기 조정');
+      } else {
+        // 포커스 위치 조정
+        this.changeFocusPosition(e.keyCode);
       }
     }
   }
 
-  shortcutEventHandler() {
-    window.addEventListener('keydown', this.copyFromSelection.bind(this));
+  changeFocusPosition(code) {
+    if (!this.focusedCell) return;
+
+    const focusedSide = this.getSideOfTarget(this.focusedCell);
+    const changed = this[focusedSide].body.changeFocusPosition(code);
+    if (!changed) {
+      let otherSide, col;
+      if (focusedSide === 'rSide') {
+        otherSide = 'lSide';
+        col =
+          this[otherSide].head.colgroup.$el.querySelectorAll('col').length - 1;
+      } else {
+        otherSide = 'rSide';
+        col = 0;
+      }
+
+      const row = this[focusedSide].body.focusIndex.row;
+      const beFocusElm = this[otherSide].body.getCellElementByIndex({
+        row,
+        col,
+      });
+      this.focusCellByElmOfSide({ elm: beFocusElm, side: otherSide });
+    }
   }
 }
 

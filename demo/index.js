@@ -1003,6 +1003,7 @@
     }, {
       key: "hideFocusLayer",
       value: function hideFocusLayer() {
+        this.unsetFocusIndex();
         removeClass(this.focusLayer, 'active');
       }
     }, {
@@ -1089,6 +1090,11 @@
         };
       }
     }, {
+      key: "unsetFocusIndex",
+      value: function unsetFocusIndex() {
+        this.focusIndex = null;
+      }
+    }, {
       key: "setSelectionIndex",
       value: function setSelectionIndex(_ref13) {
         var sRow = _ref13.sRow,
@@ -1101,6 +1107,11 @@
           eRow: eRow,
           eCol: eCol
         };
+      }
+    }, {
+      key: "unsetSelectionIndex",
+      value: function unsetSelectionIndex() {
+        this.selectionIndex = null;
       }
     }, {
       key: "getSelectionData",
@@ -1183,6 +1194,7 @@
       value: function hideSelectionLayer() {
         this.selectionStartCell = null;
         this.selectionEndCell = null;
+        this.unsetSelectionIndex();
         removeClass(this.selectionLayer, 'active');
       }
     }, {
@@ -1236,6 +1248,45 @@
           row: row,
           col: col
         };
+      }
+    }, {
+      key: "changeFocusPosition",
+      value: function changeFocusPosition(code) {
+        var _this$focusIndex = this.focusIndex,
+            row = _this$focusIndex.row,
+            col = _this$focusIndex.col;
+        var cols = this.props.head.colgroup.$el.querySelectorAll('col');
+        var thisSide = this.props.side;
+
+        switch (code) {
+          case 37:
+            if (thisSide === 'right' && col <= 0) return false;
+            col -= 1;
+            break;
+
+          case 38:
+            row -= 1;
+            break;
+
+          case 39:
+            if (thisSide === 'left' && col >= cols.length - 1) return false;
+            col += 1;
+            break;
+
+          case 40:
+            row += 1;
+            break;
+
+          default:
+            break;
+        }
+
+        var beFocusElm = this.getCellElementByIndex({
+          row: row,
+          col: col
+        });
+        if (beFocusElm) this.setFocusLayer(beFocusElm);
+        return true;
       }
     }]);
 
@@ -2091,8 +2142,8 @@
         }
       }
     }, {
-      key: "focusCell",
-      value: function focusCell(_ref3) {
+      key: "focusCellByTarget",
+      value: function focusCellByTarget(_ref3) {
         var target = _ref3.target,
             clientX = _ref3.clientX,
             clientY = _ref3.clientY;
@@ -2106,18 +2157,43 @@
             y: clientY
           };
           var side = this.getSideOfTarget(elm);
-          this.focusedCell = elm;
-          this[side].setFocusLayer(elm);
-          if (!this[side].body.gridMouseDownWrapper) this[side].body.grid = this;
-          addClass(this.$container, 'active-focus');
+          this.focusCell({
+            elm: elm,
+            side: side
+          });
         }
       }
     }, {
+      key: "focusCellByElmOfSide",
+      value: function focusCellByElmOfSide(_ref4) {
+        var elm = _ref4.elm,
+            side = _ref4.side;
+
+        if (elm) {
+          this.unsetFocusLayer();
+          this.unsetSelectionLayer();
+          this.focusCell({
+            elm: elm,
+            side: side
+          });
+        }
+      }
+    }, {
+      key: "focusCell",
+      value: function focusCell(_ref5) {
+        var elm = _ref5.elm,
+            side = _ref5.side;
+        this.focusedCell = elm;
+        this[side].setFocusLayer(elm);
+        if (!this[side].body.gridMouseDownWrapper) this[side].body.grid = this;
+        addClass(this.$container, 'active-focus');
+      }
+    }, {
       key: "selectCell",
-      value: function selectCell(_ref4) {
-        var target = _ref4.target,
-            clientX = _ref4.clientX,
-            clientY = _ref4.clientY;
+      value: function selectCell(_ref6) {
+        var target = _ref6.target,
+            clientX = _ref6.clientX,
+            clientY = _ref6.clientY;
 
         if (this.cursorPoint && this.cursorPoint.x && this.cursorPoint.y && this.focusedCell) {
           var dist = getDistance(this.cursorPoint.x, this.cursorPoint.y, clientX, clientY);
@@ -2151,15 +2227,15 @@
       }
     }, {
       key: "mouseDownWrapper",
-      value: function mouseDownWrapper(_ref5) {
-        var target = _ref5.target,
-            clientX = _ref5.clientX,
-            clientY = _ref5.clientY;
+      value: function mouseDownWrapper(_ref7) {
+        var target = _ref7.target,
+            clientX = _ref7.clientX,
+            clientY = _ref7.clientY;
         this.initResizeColumnWidth({
           target: target,
           clientX: clientX
         });
-        this.focusCell({
+        this.focusCellByTarget({
           target: target,
           clientX: clientX,
           clientY: clientY
@@ -2317,38 +2393,98 @@
     }, {
       key: "combineContents",
       value: function combineContents(lContents, rContents) {
-        return rContents.reduce(function (acc, curr, i, arr) {
-          var row = lContents[i] ? [].concat(_toConsumableArray(lContents[i]), _toConsumableArray(curr)) : curr;
-          acc += row.join('\t');
+        if (rContents.length) {
+          return rContents.reduce(function (acc, curr, i, arr) {
+            var row = lContents[i] ? [].concat(_toConsumableArray(lContents[i]), _toConsumableArray(curr)) : curr;
+            acc += row.join('\t');
 
-          if (i !== arr.length) {
-            acc += '\n';
-          }
+            if (i !== arr.length) {
+              acc += '\n';
+            }
 
-          return acc;
-        }, '');
+            return acc;
+          }, '');
+        } else {
+          return lContents.reduce(function (acc, curr, i, arr) {
+            acc += curr.join('\t');
+
+            if (i !== arr.length) {
+              acc += '\n';
+            }
+
+            return acc;
+          }, '');
+        }
       }
     }, {
       key: "copyFromSelection",
-      value: function copyFromSelection(e) {
-        if ((e.ctrlKey || e.metaKey) && e.keyCode === 67) {
-          if (hasClass(this.$container, 'active-focus')) {
-            var lSideContents = this.lSide.body.getSelectionData();
-            var rSideContents = this.rSide.body.getSelectionData();
-            var contents = this.combineContents(lSideContents, rSideContents);
-            var ta = document.createElement('textarea');
-            this.props.target.appendChild(ta);
-            ta.value = contents;
-            ta.select();
-            document.execCommand('copy');
-            this.props.target.removeChild(ta);
-          }
-        }
+      value: function copyFromSelection() {
+        var lSideContents = this.lSide.body.getSelectionData();
+        var rSideContents = this.rSide.body.getSelectionData();
+        var contents = this.combineContents(lSideContents, rSideContents);
+        var ta = document.createElement('textarea');
+        this.props.target.appendChild(ta);
+        ta.value = contents;
+        ta.select();
+        document.execCommand('copy');
+        this.props.target.removeChild(ta);
       }
     }, {
       key: "shortcutEventHandler",
       value: function shortcutEventHandler() {
-        window.addEventListener('keydown', this.copyFromSelection.bind(this));
+        window.addEventListener('keydown', this.keydownWrapper.bind(this));
+      }
+    }, {
+      key: "keydownWrapper",
+      value: function keydownWrapper(e) {
+        // 그리드가 비선택 상태면 리턴
+        if (!hasClass(this.$container, 'active-focus')) return; // 복사하기 ctrl+c
+
+        if ((e.ctrlKey || e.metaKey) && e.keyCode === 67) {
+          this.copyFromSelection();
+        } // 방향키
+
+
+        if (e.keyCode >= 37 && e.keyCode <= 40) {
+          e.preventDefault();
+
+          if (e.shiftKey) {
+            // 선택영역 크기 조정
+            console.log('todo: 선택영역 크기 조정');
+          } else {
+            // 포커스 위치 조정
+            this.changeFocusPosition(e.keyCode);
+          }
+        }
+      }
+    }, {
+      key: "changeFocusPosition",
+      value: function changeFocusPosition(code) {
+        if (!this.focusedCell) return;
+        var focusedSide = this.getSideOfTarget(this.focusedCell);
+        var changed = this[focusedSide].body.changeFocusPosition(code);
+
+        if (!changed) {
+          var otherSide, col;
+
+          if (focusedSide === 'rSide') {
+            otherSide = 'lSide';
+            col = this[otherSide].head.colgroup.$el.querySelectorAll('col').length - 1;
+          } else {
+            otherSide = 'rSide';
+            col = 0;
+          }
+
+          var row = this[focusedSide].body.focusIndex.row;
+          var beFocusElm = this[otherSide].body.getCellElementByIndex({
+            row: row,
+            col: col
+          });
+          this.focusCellByElmOfSide({
+            elm: beFocusElm,
+            side: otherSide
+          });
+        }
       }
     }]);
 

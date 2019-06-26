@@ -399,6 +399,7 @@ class Body {
   }
 
   hideFocusLayer() {
+    this.unsetFocusIndex();
     removeClass(this.focusLayer, 'active');
   }
 
@@ -448,6 +449,10 @@ class Body {
     this.focusIndex = { row, col };
   }
 
+  unsetFocusIndex() {
+    this.focusIndex = null;
+  }
+
   setSelectionIndex({ sRow, sCol, eRow, eCol }) {
     this.selectionIndex = {
       sRow,
@@ -455,6 +460,10 @@ class Body {
       eRow,
       eCol,
     };
+  }
+
+  unsetSelectionIndex() {
+    this.selectionIndex = null;
   }
 
   getSelectionData() {
@@ -518,6 +527,7 @@ class Body {
   hideSelectionLayer() {
     this.selectionStartCell = null;
     this.selectionEndCell = null;
+    this.unsetSelectionIndex();
     removeClass(this.selectionLayer, 'active');
   }
 
@@ -539,6 +549,34 @@ class Body {
     this.setFocusIndex({ row, col });
     this.setSelectionIndex({ sRow: row, sCol: col, eRow: row, eCol: col });
     return { left, top, width, height, row, col };
+  }
+
+  changeFocusPosition(code) {
+    let { row, col } = this.focusIndex;
+    const cols = this.props.head.colgroup.$el.querySelectorAll('col');
+    const thisSide = this.props.side;
+    switch (code) {
+      case 37:
+        if (thisSide === 'right' && col <= 0) return false;
+        col -= 1;
+        break;
+      case 38:
+        row -= 1;
+        break;
+      case 39:
+        if (thisSide === 'left' && col >= cols.length - 1) return false;
+        col += 1;
+        break;
+      case 40:
+        row += 1;
+        break;
+      default:
+        break;
+    }
+
+    const beFocusElm = this.getCellElementByIndex({ row, col });
+    if (beFocusElm) this.setFocusLayer(beFocusElm);
+    return true;
   }
 }
 
